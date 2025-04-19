@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="sale_margin_excel_report_template" model="ir.ui.view">
+            <field name="name">sale.margin.excel.report.template</field>
+            <field name="model">sale.margin.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group string="Dates">
+                        <group>
+                            <field name="start_date"/>
+                        </group>
+                        <group>
+                            <field name="end_date"/>
+                        </group>
+                    </group>
+                    <i>
+                        <field name="date_tooltip" readonly="1" nolabel="1"
+                               style="color: #787775; white-space: nowrap;"/>
+                    </i>
+                    <group string="Customers &amp; Sale Team">
+                        <group>
+                            <field name="customer_ids" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="sale_team_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <group string="Company &amp; Warehouse">
+                        <group>
+                            <field name="company_ids" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="warehouse_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <group string="Products">
+                        <group>
+                            <field name="product_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <div class="d-flex justify-content-between w-100">
+                        <div class="w-100">
+                            <h6 class="d-inline w-50 mt-1 me-3">
+                                <field name="profit"/>
+                                <label for="profit" class="me-2">Highlight Positive Margin</label>
+                            </h6>
+                            <h6 class="d-inline w-50 mt-1 me-3">
+                                <field name="loss"/>
+                                <label for="loss" class="me-2">Highlight Negative Margin</label>
+                            </h6>
+                        </div>
+                    </div>
+                    <footer>
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <button name="btn_pdf_action" string="PDF" type="object" class="oe_highlight"/>
+                            <span style="vertical-align: middle; margin: 0 5px;">or</span>
+                            <button name="excel_sale_margin_report" string="Excel" type="object" class="oe_highlight"/>
+                            <span style="margin: 0 5px;">or</span>
+                            <button special="cancel" string="Cancel" type="object" class="oe_highlight"/>
+                        </div>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_sale_margin_report_wizard" model="ir.actions.act_window">
+            <field name="name">Sale Margin Report</field>
+            <field name="res_model">sale.margin.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>
