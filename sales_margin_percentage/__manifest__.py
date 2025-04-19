@@ -27,7 +27,7 @@
     'license': 'AGPL-3',
     'website': 'http://www.asceticbs.com',
     'description': """""",
-    'version': '16.0.1.0',
+    'version': '17.0.1.0',
     'depends': ['sale_management','sale_margin'],
     'data': ['views/sale_order.xml'],
     'images': ['static/description/banner.png'],
