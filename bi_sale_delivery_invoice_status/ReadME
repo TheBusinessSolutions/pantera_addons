@@ -1,0 +1,5 @@
+
+17.0.0.1 ==> Fixed issue of when in picking if all quantity can't be deliver at that time in sale order enable fully deliverd boolean.
+
+=> 17.0.0.2 :- Date 21 Nov 2024
+:- Fixed Partially Delivered and Fully Delivered boolean field issue.
