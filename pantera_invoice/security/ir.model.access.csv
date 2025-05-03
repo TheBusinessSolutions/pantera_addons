@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pantera_product_variety,pantera.product.variety,model_pantera_product_variety,,1,1,1,1
+access_pantera_product_class,pantera.product.class,model_pantera_product_class,,1,1,1,1
+access_pantera_product_size,pantera.product.size,model_pantera_product_size,,1,1,1,1
+access_pantera_product_box,pantera.product.box,model_pantera_product_box,,1,1,1,1
+access_pantera_product_brand,pantera.product.brand,model_pantera_product_brand,,1,1,1,1

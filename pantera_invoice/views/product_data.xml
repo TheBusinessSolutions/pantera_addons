@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="product_inherit_form_view_pantera" model="ir.ui.view">
+        <field name="name">product.inherit.form.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="before">
+                <group>
+                    <group>
+                        <field name="pantera_product_variety_id"/>
+                        <field name="pantera_product_class_id"/>
+
+                    </group>
+                    <group>
+                        <field name="pantera_product_size_id"/>
+                        <field name="pantera_product_box_id"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!--product data in purchase order-->
+    <record id="purchase_order_form_pantera" model="ir.ui.view">
+        <field name="name">purchase.order.form.pantera</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='name']"
+                   position="after">
+                <field name="pantera_product_variety_id" optional="hide"/>
+                <field name="pantera_product_class_id" optional="hide"/>
+                <field name="pantera_product_size_id" optional="hide"/>
+                <field name="pantera_product_box_id" optional="hide"/>
+                <field name="product_brand_id" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!--product data in sale order-->
+
+    <record id="view_order_form_pantera" model="ir.ui.view">
+        <field name="name">view.order.form.pantera</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" position="after">
+                <field name="pantera_product_variety_id" optional="hide"/>
+                <field name="pantera_product_class_id" optional="hide"/>
+                <field name="pantera_product_size_id" optional="hide"/>
+                <field name="pantera_product_box_id" optional="hide"/>
+                <field name="product_brand_id" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!--product data in account move-->
+
+    <record id="view_move_form_pantera" model="ir.ui.view">
+        <field name="name">account.move.form.pantera</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_line_ids']//field[@name='account_id']" position="after">
+                <field name="container_no" optional="hide"/>
+                <field name="pantera_product_variety_id" optional="hide"/>
+                <field name="pantera_product_class_id" optional="hide"/>
+                <field name="pantera_product_size_id" optional="hide"/>
+                <field name="pantera_product_box_id" optional="hide"/>
+                <field name="product_brand_id" optional="hide"/>
+            </xpath>
+            <xpath position="inside" expr="//header">
+                <button name="print_pantera_inv" string="Print Invoice" class="oe_highlight"
+                        type="object"/>
+            </xpath>
+            <xpath expr="//notebook" position="before">
+                <group>
+                    <group>
+                        <field name="exporter_id"/>
+                        <field name="pol"/>
+                        <field name="temp_on_loading"/>
+                        <field name="vessel"/>
+                        <field name="eta_date"/>
+                        <field name="bl_number"/>
+
+                    </group>
+                    <group>
+                        <field name="seller_id"/>
+                        <field name="pod"/>
+                        <field name="temp_on_arrival"/>
+                        <field name="date_log_no"/>
+                        <field name="etd_date"/>
+
+
+                    </group>
+                </group>
+
+            </xpath>
+        </field>
+    </record>
+
+
+    <!--product data in stock picking -->
+    <record id="view_picking_form_pantera" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.pantera</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/notebook/page/field[@name='move_ids_without_package']/tree/field[@name='product_id']"
+                   position="after">
+                <field name="pantera_product_variety_id" optional="hide"/>
+                <field name="pantera_product_class_id" optional="hide"/>
+                <field name="pantera_product_size_id" optional="hide"/>
+                <field name="pantera_product_box_id" optional="hide"/>
+                <field name="product_brand_id" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
