@@ -1,0 +1,35 @@
+/***************************
+* Cusom Fonts
+* 1. Droid Arabic Kufi, by Google
+* 2. Droid Arabic Naskh, also by Google
+* 3. Beutiful Amiri, Opensource.
+****************************/
+/* Magic happens here */
+
+
+
+@font-face {
+  font-family: "Tajawal-Regular";
+  src: url("../fonts/Tajawal-Regular.eot"); /* IE9 Compat Modes */
+  src: url("../fonts/Tajawal-Regular.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("../fonts/Tajawal-Regular.otf") format("opentype"), /* Open Type Font */
+    url("../fonts/Tajawal-Regular.ttf") format("truetype"), /* Safari, Android, iOS */
+    url("../fonts/Tajawal-Regular.woff") format("woff"), /* Modern Browsers */
+    url("../fonts/Tajawal-Regular.woff2") format("woff2"); /* Modern Browsers */
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: "Janna LT";
+  src: url("../fonts/Janna-LT-Regular.eot"); /* IE9 Compat Modes */
+  src: url("../fonts/Janna-LT-Regular.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("../fonts/Janna-LT-Regular.otf") format("opentype"), /* Open Type Font */
+    url("../fonts/fonts/Janna-LT-Regular.ttf") format("truetype"), /* Safari, Android, iOS */
+    url("../fonts/fonts/Janna-LT-Regular.woff") format("woff"), /* Modern Browsers */
+    url("..//fonts/Janna-LT-Regular.woff2") format("woff2"); /* Modern Browsers */
+  font-weight: normal;
+  font-style: normal;
+}
+
