@@ -21,6 +21,7 @@
         'views/views.xml',
         'views/product_data.xml',
         'reports/invoice_pantera_report.xml',
+        'reports/pantera_packing_list_report.xml',
     ],
 
     'assets': {
