@@ -62,6 +62,11 @@
                         }
                     </style>
                     <div class="page" style="font-family: 'Tajawal-Regular';">
+						<div class="row">
+                            <div class="col-12" style="text-align:center;margin:5px;">
+                                <strong>Packing List</strong>
+                            </div>
+                        </div>
                         <div class="row">
                             <table style="border:1px solid white; width: 100%;">
                                 <!-- Row 1: Invoice No -->
@@ -208,11 +213,7 @@
 
                             </table>
                         </div>
-                        <div class="row">
-                            <div class="col-12" style="text-align:center;margin:5px;">
-                                <strong>Packing List</strong>
-                            </div>
-                        </div>
+                        
                         <div class="row">
                             <table style="border:1px solid white;">
                                 <tr style="border:0px;">
