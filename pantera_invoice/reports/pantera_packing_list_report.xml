@@ -27,11 +27,11 @@
             </t>
             <div class="header" style="text-align: center; padding-bottom: 15px;">
                 <t t-if="doc.with_context(lang='en_US').brand_id">
-                    <img t-att-src="image_data_uri(doc.brand_id.image_1920)" style="width: 100%;max-height: 120px;object-fit: contain;"
+                    <img t-att-src="image_data_uri(doc.brand_id.image_1920)" style="max-height: 120px;object-fit: contain;"
                          alt="Logo"/>
                 </t>
                 <t t-else="">
-                    <img t-att-src="image_data_uri(company.logo)" style="width: 100%;max-height: 120px;object-fit: contain;"
+                    <img t-att-src="image_data_uri(company.logo)" style="max-height: 120px;object-fit: contain;"
                          alt="Logo"/>
                 </t>
             </div>
@@ -63,26 +63,67 @@
                     </style>
                     <div class="page" style="font-family: 'Tajawal-Regular';">
                         <div class="row">
-                            <table style="border:1px solid white;">
+                            <table style="border:1px solid white; width: 100%;">
+                                <!-- Row 1: Invoice No -->
                                 <tr style="border:0px;">
                                     <td style="border:0px;">
                                         <strong>Invoice No.:</strong>
                                     </td>
                                     <td style="border:0px;">
-                                        <t t-esc="doc.name"/>
+                                        <t t-esc="o.name"/>
                                     </td>
-                                    <td rowspan="3" style="border:0px;">
-                                        <strong>Buyer:</strong>
+                                    <td style="border:0px;"></td>
+                                    <td style="border:0px;"></td>
+								</tr>
+								
+                                <!-- Row 2: Date -->
+								<tr style="border:0px;">
+                                    <td style="border:0px;">
+                                        <strong>Date:</strong>
                                     </td>
-                                    <td rowspan="3" style="border:0px;">
-                                        <t t-esc="doc.partner_id.name"/>
+                                    <td style="border:0px;">
+                                        <t t-esc="o.invoice_date"/>
+                                    </td>
+                                    <td style="border:0px;"></td>
+                                    <td style="border:0px;"></td>
+                                </tr>
+                                
+                                <!-- Row 3: Shipper & Consignee (Start of Rowspan) -->
+								<tr>
+									<td style="border:0px;">
+                                        <strong>Shipper:</strong>
+                                    </td>
+									<td rowspan="3" style="border:0px; vertical-align: top;">
+										<t t-esc="o.company_id.name"/>
+										<br/>
+										<t t-if="o.company_id.street">
+											<t t-esc="o.company_id.street"/>
+                                            <br/>
+										</t>
+										<t t-esc="o.company_id.city"/>
+                                        <t t-if="o.company_id.state_id">, <t t-esc="o.company_id.state_id.name"/></t>
+                                        <t t-if="o.company_id.country_id">, <t t-esc="o.company_id.country_id.name"/></t>
+										<br/>
+										<t t-if="o.company_id.phone">
+											<strong>Tel:</strong>
+											<t t-esc="o.company_id.phone"/>
+										</t>
+										<br/>
+									</td>
+
+                                    <td style="border:0px;">
+                                        <strong>Consignee:</strong>
+                                    </td>
+                                    <td rowspan="3" style="border:0px; vertical-align: top;">
+                                        <t t-esc="o.partner_id.name"/>
                                         <br/>
                                         <t t-if="o.partner_id.street">
                                             <t t-esc="o.partner_id.street"/>
+                                            <br/>
                                         </t>
-                                        <br/>
-                                        <t t-esc="o.partner_id.city"/>,<t t-esc="o.partner_id.state_id.name"/>,
-                                        <t t-esc="o.partner_id.country_id.name"/>
+                                        <t t-esc="o.partner_id.city"/>
+                                        <t t-if="o.partner_id.state_id">, <t t-esc="o.partner_id.state_id.name"/></t>
+                                        <t t-if="o.partner_id.country_id">, <t t-esc="o.partner_id.country_id.name"/></t>
                                         <br/>
                                         <t t-if="o.partner_id.phone">
                                             <strong>Tel:</strong>
@@ -91,41 +132,44 @@
                                         <br/>
                                     </td>
                                 </tr>
-                                <tr style="border:0px;">
-                                    <td style="border:0px;">
-                                        <strong>Date:</strong>
-                                    </td>
-                                    <td style="border:0px;">
-                                        <t t-esc="doc.invoice_date"/>
-                                    </td>
-                                </tr>
+                                
+                                <!-- Row 4: Terms (Middle of Rowspan) -->
                                 <tr style="border:0px;">
                                     <td style="border:0px;">
                                         <strong>Terms:</strong>
                                     </td>
-                                    <td style="border:0px;">
-                                        <t t-esc="doc.narration"/>
-                                    </td>
+                                    <!-- Col 2 is occupied by Shipper rowspan -->
+                                    <td style="border:0px;"></td> 
+                                    <!-- Col 4 is occupied by Consignee rowspan -->
                                 </tr>
+
+                                <!-- Row 5: Vessel (End of Shipper/Consignee Rowspan) -->
                                 <tr style="border:0px;">
                                     <td style="border:0px;">
                                         <strong>Vessel:</strong>
                                     </td>
+                                    <!-- Col 2 is occupied by Shipper rowspan -->
                                     <td style="border:0px;">
-                                        <t t-esc="doc.vessel"/>
+                                        <t t-esc="o.vessel"/>
                                     </td>
-                                    <td rowspan="3" style="border:0px;">
+                                    <!-- Col 4 is occupied by Consignee rowspan -->
+                                </tr>
+
+                                <!-- Row 6: Seller & Exporter (New Rowspan Block) -->
+                                <tr style="border:0px;">
+                                    <td style="border:0px;">
                                         <strong>Seller:</strong>
                                     </td>
-                                    <td rowspan="3" style="border:0px;">
-                                        <t t-esc="doc.seller_id.name"/>
+                                    <td rowspan="2" style="border:0px; vertical-align: top;">
+                                        <t t-esc="o.seller_id.name"/>
                                         <br/>
                                         <t t-if="o.seller_id.street">
                                             <t t-esc="o.seller_id.street"/>
+                                            <br/>
                                         </t>
-                                        <br/>
-                                        <t t-esc="o.seller_id.city"/>,<t t-esc="o.seller_id.state_id.name"/>,
-                                        <t t-esc="o.seller_id.country_id.name"/>
+                                        <t t-esc="o.seller_id.city"/>
+                                        <t t-if="o.seller_id.state_id">, <t t-esc="o.seller_id.state_id.name"/></t>
+                                        <t t-if="o.seller_id.country_id">, <t t-esc="o.seller_id.country_id.name"/></t>
                                         <br/>
                                         <t t-if="o.seller_id.phone">
                                             <strong>Tel:</strong>
@@ -133,22 +177,20 @@
                                         </t>
                                         <br/>
                                     </td>
-                                </tr>
-                                <tr style="border:0px;">
-                                </tr>
-                                <tr style="border:0px;">
+                                    
                                     <td style="border:0px;">
                                         <strong>Exporter:</strong>
                                     </td>
-                                    <td style="border:0px;">
-                                        <t t-esc="doc.exporter_id.name"/>
+                                    <td rowspan="2" style="border:0px; vertical-align: top;">
+                                        <t t-esc="o.exporter_id.name"/>
                                         <br/>
                                         <t t-if="o.exporter_id.street">
                                             <t t-esc="o.exporter_id.street"/>
+                                            <br/>
                                         </t>
-                                        <br/>
-                                        <t t-esc="o.exporter_id.city"/>,<t t-esc="o.exporter_id.state_id.name"/>,
-                                        <t t-esc="o.exporter_id.country_id.name"/>
+                                        <t t-esc="o.exporter_id.city"/>
+                                        <t t-if="o.exporter_id.state_id">, <t t-esc="o.exporter_id.state_id.name"/></t>
+                                        <t t-if="o.exporter_id.country_id">, <t t-esc="o.exporter_id.country_id.name"/></t>
                                         <br/>
                                         <t t-if="o.exporter_id.phone">
                                             <strong>Tel:</strong>
@@ -157,9 +199,14 @@
                                         <br/>
                                     </td>
                                 </tr>
+                                
+                                <!-- Row 7: Empty row to complete Seller/Exporter rowspan -->
+                                <tr style="border:0px;">
+                                    <td style="border:0px;"></td>
+                                    <td style="border:0px;"></td>
+                                </tr>
 
                             </table>
-
                         </div>
                         <div class="row">
                             <div class="col-12" style="text-align:center;margin:5px;">
