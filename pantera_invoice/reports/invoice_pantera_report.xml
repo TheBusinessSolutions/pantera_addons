@@ -17,7 +17,6 @@
             <field name="dpi">90</field>
         </record>
 
-
         <template id="external_layout_inv_pantera">
             <t t-if="o and 'company_id' in o">
                 <t t-set="company" t-value="o.company_id"/>
@@ -25,326 +24,197 @@
             <t t-if="not o or not 'company_id' in o">
                 <t t-set="company" t-value="res_company"/>
             </t>
-            <!-- <div class="header">
-                <t t-if="doc.with_context(lang='en_US').brand_id">
-                    <img t-att-src="image_data_uri(doc.brand_id.image_1920)" style="width: 150px;max-height: 100px;"
-                         alt="Logo"/>
-                </t>
-                <t t-else="">
-                    <img t-att-src="image_data_uri(company.logo)" style="width: 150px;max-height: 100px;"
-                         alt="Logo"/>
-
-                </t>
-            </div> -->
+            
             <div class="header" style="text-align: center;">
-                <t t-if="doc.with_context(lang='en_US').brand_id">
-                    <img t-att-src="image_data_uri(doc.brand_id.image_1920)" style="align: left;max-height: 150px;object-fit: contain;"
-                         alt="Logo"/>
+                <t t-if="o.company_id.brand_id">
+                    <img t-att-src="image_data_uri(o.company_id.brand_id.image_1920)" 
+                         style="align: left; max-height: 150px; object-fit: contain;" alt="Logo"/>
                 </t>
                 <t t-else="">
-                    <img t-att-src="image_data_uri(company.logo)" style="align: left;max-height: 150px;object-fit: contain;"
-                         alt="Logo"/>
+                    <img t-att-src="image_data_uri(company.logo)" 
+                         style="align: left; max-height: 150px; object-fit: contain;" alt="Logo"/>
                 </t>
             </div>
 
             <div class="article o_report_layout_standard">
                 <t t-raw="0"/>
             </div>
+            
             <div class="footer o_background_footer">
                 <div class="text-center" style="font-size:14px;">
                     <div t-if="report_type == 'pdf'" class="text-muted">
-                        Page:
-                        <span class="page"/>
-                        of
-                        <span class="topage"/>
+                        Page: <span class="page"/> of <span class="topage"/>
                     </div>
                 </div>
             </div>
-
         </template>
 
-
         <template id="report_inv_pantera_document">
+            <!-- Standard Odoo uses 'docs', but keeping 'doc' if your controller passes it as such -->
             <t t-foreach="doc" t-as="o">
                 <t t-call="pantera_invoice.external_layout_inv_pantera">
                     <style>
-                        td{
-                        padding:5px;
-                        }
-                        <!--                        tr,td{-->
-                        <!--                        border:1px solid white;-->
-                        <!--                        }-->
+                        td { padding: 5px; vertical-align: top; }
                     </style>
+                    
                     <div class="page" style="font-family: 'Tajawal-Regular';">
                         <div class="row">
-                            <table style="border:1px solid white;">
-                                <tr style="border:0px;">
-                                    <td style="border:0px;">
-                                        <strong>Invoice No.:</strong>
+                            <table style="border:1px solid white; width: 100%;">
+                                <!-- Row 1: Invoice No -->
+                                <tr>
+                                    <td style="border:0px;"><strong>Invoice No.:</strong></td>
+                                    <td style="border:0px;"><t t-esc="o.name"/></td>
+                                    <td style="border:0px;"></td> <!-- Spacer for alignment -->
+                                    <td style="border:0px;"></td>
+                                </tr>
+                                
+                                <!-- Row 2: Date -->
+                                <tr>
+                                    <td style="border:0px;"><strong>Date:</strong></td>
+                                    <td style="border:0px;"><t t-esc="o.invoice_date"/></td>
+                                    <td style="border:0px;"></td>
+                                    <td style="border:0px;"></td>
+                                </tr>
+
+                                <!-- Row 3: Shipper & Consignee Headers + Details (Rowspan 3) -->
+                                <tr>
+                                    <td style="border:0px;"><strong>Shipper:</strong></td>
+                                    <td rowspan="3" style="border:0px;">
+                                        <t t-esc="o.company_id.name"/><br/>
+                                        <t t-if="o.company_id.street"><t t-esc="o.company_id.street"/><br/></t>
+                                        <t t-esc="o.company_id.city"/>
+                                        <t t-if="o.company_id.state_id">, <t t-esc="o.company_id.state_id.name"/></t>
+                                        <t t-if="o.company_id.country_id">, <t t-esc="o.company_id.country_id.name"/></t><br/>
+                                        <t t-if="o.company_id.phone"><strong>Tel:</strong> <t t-esc="o.company_id.phone"/><br/></t>
                                     </td>
-                                    <td style="border:0px;">
-                                        <t t-esc="doc.name"/>
-                                    </td>
-								</tr>
-								<tr style="border:0px;">
-                                    <td style="border:0px;">
-                                        <strong>Date:</strong>
-                                    </td>
-                                    <td style="border:0px;">
-                                        <t t-esc="doc.invoice_date"/>
+                                    
+                                    <td style="border:0px;"><strong>Consignee:</strong></td>
+                                    <td rowspan="3" style="border:0px;">
+                                        <t t-esc="o.partner_id.name"/><br/>
+                                        <t t-if="o.partner_id.street"><t t-esc="o.partner_id.street"/><br/></t>
+                                        <t t-esc="o.partner_id.city"/>
+                                        <t t-if="o.partner_id.state_id">, <t t-esc="o.partner_id.state_id.name"/></t>
+                                        <t t-if="o.partner_id.country_id">, <t t-esc="o.partner_id.country_id.name"/></t><br/>
+                                        <t t-if="o.partner_id.phone"><strong>Tel:</strong> <t t-esc="o.partner_id.phone"/><br/></t>
                                     </td>
                                 </tr>
-								<tr>
-									<!--shipper details-->
-									<td rowspan="3" style="border:0px;">
-                                        <strong>Shipper:</strong>
+
+                                <!-- Row 4: Terms (Middle of Rowspan) -->
+                                <tr>
+                                    <td style="border:0px;"><strong>Terms:</strong></td>
+                                    <!-- Column 2 is occupied by Shipper rowspan -->
+                                    <td style="border:0px;"></td> 
+                                    <!-- Column 4 is occupied by Consignee rowspan -->
+                                </tr>
+
+                                <!-- Row 5: Vessel (End of Shipper/Consignee Rowspan) -->
+                                <tr>
+                                    <td style="border:0px;"><strong>Vessel:</strong></td>
+                                    <!-- Column 2 is occupied by Shipper rowspan -->
+                                    <td style="border:0px;"><t t-esc="o.vessel"/></td>
+                                    <!-- Column 4 is occupied by Consignee rowspan -->
+                                </tr>
+
+                                <!-- Row 6: Seller & Exporter Headers + Details (New Rowspan Block) -->
+                                <tr>
+                                    <td style="border:0px;"><strong>Seller:</strong></td>
+                                    <td rowspan="2" style="border:0px;">
+                                        <t t-esc="o.seller_id.name"/><br/>
+                                        <t t-if="o.seller_id.street"><t t-esc="o.seller_id.street"/><br/></t>
+                                        <t t-esc="o.seller_id.city"/>
+                                        <t t-if="o.seller_id.state_id">, <t t-esc="o.seller_id.state_id.name"/></t>
+                                        <t t-if="o.seller_id.country_id">, <t t-esc="o.seller_id.country_id.name"/></t><br/>
+                                        <t t-if="o.seller_id.phone"><strong>Tel:</strong> <t t-esc="o.seller_id.phone"/><br/></t>
                                     </td>
-									<td rowspan="3" style="border:0px;">
-										<t t-esc="doc.company_id.name"/>
-										<br/>
-										<t t-if="doc.company_id.street">
-											<t t-esc="doc.company_id.street"/>
-										</t>
-										<br/>
-										<t t-esc="doc.company_id.city"/>, <t t-esc="doc.company_id.state_id.name"/>,
-										<t t-esc="doc.company_id.country_id.name"/>
-										<br/>
-										<t t-if="doc.company_id.phone">
-											<strong>Tel:</strong>
-											<t t-esc="doc.company_id.phone"/>
-										</t>
-										<br/>
-									</td>
-                                        <!--                                        <t t-if="o.partner_id.vat">-->
-                                        <!--                                             <strong>Vat: </strong><t t-esc="o.partner_id.vat"/>-->
-                                        <!--                                        </t>-->
-
-
                                     
-									<!--customer details-->
-                                    <td rowspan="3" style="border:0px;">
-                                        <strong>Consginee:</strong>
-                                    </td>
-                                    <td rowspan="3" style="border:0px;">
-                                        <t t-esc="doc.partner_id.name"/>
-                                        <br/>
-                                        <t t-if="o.partner_id.street">
-                                            <t t-esc="o.partner_id.street"/>
-                                        </t>
-                                        <br/>
-                                        <t t-esc="o.partner_id.city"/>,<t t-esc="o.partner_id.state_id.name"/>,
-                                        <t t-esc="o.partner_id.country_id.name"/>
-                                        <br/>
-                                        <t t-if="o.partner_id.phone">
-                                            <strong>Tel:</strong>
-                                            <t t-esc="o.partner_id.phone"/>
-                                        </t>
-                                        <br/>
-                                        <!--                                        <t t-if="o.partner_id.vat">-->
-                                        <!--                                             <strong>Vat: </strong><t t-esc="o.partner_id.vat"/>-->
-                                        <!--                                        </t>-->
-
-
+                                    <td style="border:0px;"><strong>Exporter:</strong></td>
+                                    <td rowspan="2" style="border:0px;">
+                                        <t t-esc="o.exporter_id.name"/><br/>
+                                        <t t-if="o.exporter_id.street"><t t-esc="o.exporter_id.street"/><br/></t>
+                                        <t t-esc="o.exporter_id.city"/>
+                                        <t t-if="o.exporter_id.state_id">, <t t-esc="o.exporter_id.state_id.name"/></t>
+                                        <t t-if="o.exporter_id.country_id">, <t t-esc="o.exporter_id.country_id.name"/></t><br/>
+                                        <t t-if="o.exporter_id.phone"><strong>Tel:</strong> <t t-esc="o.exporter_id.phone"/><br/></t>
                                     </td>
                                 </tr>
                                 
-                                <tr style="border:0px;">
-                                    <td style="border:0px;">
-                                        <strong>Terms:</strong>
-                                    </td>
-                                    <td style="border:0px;">
-                                        <t t-esc="doc.narration"/>
-                                    </td>
-                                </tr>
-                                <tr style="border:0px;">
-                                    <td style="border:0px;">
-                                        <strong>Vessel:</strong>
-                                    </td>
-                                    <td style="border:0px;">
-                                        <t t-esc="doc.vessel"/>
-                                    </td>
-                                    <td rowspan="3" style="border:0px;">
-                                        <strong>Seller:</strong>
-                                    </td>
-                                    <td rowspan="3" style="border:0px;">
-                                        <t t-esc="doc.seller_id.name"/>
-                                        <br/>
-                                        <t t-if="o.seller_id.street">
-                                            <t t-esc="o.seller_id.street"/>
-                                        </t>
-                                        <br/>
-                                        <t t-esc="o.seller_id.city"/>,<t t-esc="o.seller_id.state_id.name"/>,
-                                        <t t-esc="o.seller_id.country_id.name"/>
-                                        <br/>
-                                        <t t-if="o.seller_id.phone">
-                                            <strong>Tel:</strong>
-                                            <t t-esc="o.seller_id.phone"/>
-                                        </t>
-                                        <br/>
-                                        <!--                                        <t t-if="o.partner_id.vat">-->
-                                        <!--                                             <strong>Vat: </strong><t t-esc="o.partner_id.vat"/>-->
-                                        <!--                                        </t>-->
-                                    </td>
-                                </tr>
-                                <tr style="border:0px;">
-                                </tr>
-                                <tr style="border:0px;">
-                                    <td style="border:0px;">
-                                        <strong>Exporter:</strong>
-                                    </td>
-                                    <td style="border:0px;">
-                                        <t t-esc="doc.exporter_id.name"/>
-                                        <br/>
-                                        <t t-if="o.exporter_id.street">
-                                            <t t-esc="o.exporter_id.street"/>
-                                        </t>
-                                        <br/>
-                                        <t t-esc="o.exporter_id.city"/>,<t t-esc="o.exporter_id.state_id.name"/>,
-                                        <t t-esc="o.exporter_id.country_id.name"/>
-                                        <br/>
-                                        <t t-if="o.exporter_id.phone">
-                                            <strong>Tel:</strong>
-                                            <t t-esc="o.exporter_id.phone"/>
-                                        </t>
-                                        <br/>
-                                        <!--                                        <t t-if="o.partner_id.vat">-->
-                                        <!--                                             <strong>Vat: </strong><t t-esc="o.partner_id.vat"/>-->
-                                        <!--                                        </t>-->
-                                    </td>
-                                </tr>
-
-                            </table>
-
-                        </div>
-                        <div class="row">
-                            <div class="col-12" style="text-align:center;margin:5px;">
-                                <strong>Commercial Invoice</strong>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <table style="border:1px solid white;">
-                                <tr style="border:0px;">
-                                    <td style="border:0px;border-bottom:1px solid;">
-                                        <t t-set="total_net" t-value="0"/>
-                                        <strong>Container</strong>
-                                    </td>
-                                    <td style="border:0px;border-bottom:1px solid;">
-                                        <strong>Quantity</strong>
-                                    </td>
-                                    <td style="border:0px;border-bottom:1px solid;">
-                                        <strong>Box</strong>
-                                    </td>
-                                    <td style="border:0px;border-bottom:1px solid;">
-                                        <strong>Product</strong>
-                                    </td>
-                                    <td style="border:0px;border-bottom:1px solid;">
-                                        <strong>Variety</strong>
-                                    </td>
-                                    <td style="border:0px;border-bottom:1px solid;">
-                                        <strong>Bruto</strong>
-                                    </td>
-                                    <td style="border:0px;border-bottom:1px solid;">
-                                        <!--                                    <strong>Total Gross</strong>-->
-                                    </td>
-                                    <td style="border:0px;border-bottom:1px solid;"/>
-                                    <td style="border:0px;border-bottom:1px solid;">
-                                        <strong>Netto</strong>
-                                    </td>
-                                    <td style="border:0px;border-bottom:1px solid;">
-                                        <!--                                    <strong>Total Net</strong>-->
-                                    </td>
-                                    <td style="border:0px;border-bottom:1px solid;"/>
-                                    <td style="border:0px;border-bottom:1px solid;">
-                                        <strong>Price</strong>
-                                    </td>
-                                    <td style="border:0px;border-bottom:1px solid;"/>
-                                    <td style="border:0px;border-bottom:1px solid;">
-                                        <strong>Amount</strong>
-                                    </td>
-                                </tr>
-                                <t t-set="total_gross" t-value="0"/>
-                                <t t-set="total_net" t-value="0"/>
-                                <t t-set="total_amount" t-value="0"/>
-                                <t t-foreach="doc.invoice_line_ids" t-as="line">
-                                    <tr style="border-bottom:1px solid black;">
-                                        <t t-set="total_line_gross" t-value="line.product_id.weight * line.quantity"/>
-                                        <t t-set="total_line_net" t-value="line.product_id.net_weight * line.quantity"/>
-
-                                        <t t-set="total_gross" t-value="total_gross+total_line_gross"/>
-                                        <t t-set="total_net" t-value="total_net+total_line_net"/>
-
-                                        <t t-set="total_amount" t-value="total_amount+line.price_total"/>
-
-
-                                        <td>
-                                            <t t-esc="line.container_no"/>
-                                        </td>
-                                        <td>
-                                            <t t-esc="line.quantity"/>
-                                        </td>
-                                        <td>
-                                            <t t-esc="line.pantera_product_box_id.name"/>
-                                        </td>
-                                        <td>
-                                            <t t-esc="line.product_id.name"/>
-                                        </td>
-                                        <td>
-                                            <t t-esc="line.pantera_product_variety_id.name"/>
-                                        </td>
-                                        <td>
-                                            <t t-esc="line.product_id.weight"/>
-                                        </td>
-                                        <td>
-                                            <t t-esc="line.product_id.weight * line.quantity"/>
-                                        </td>
-                                        <td>
-                                            <t t-esc="line.product_uom_id.name"/>
-                                        </td>
-                                        <td>
-                                            <t t-esc="line.product_id.net_weight"/>
-                                        </td>
-                                        <td>
-                                            <t t-esc="line.product_id.net_weight * line.quantity"/>
-                                        </td>
-                                        <td>
-                                            <t t-esc="line.product_uom_id.name"/>
-                                        </td>
-                                        <td>
-                                            <t t-esc="line.price_unit"/>
-                                        </td>
-                                        <td>
-                                            <t t-esc="line.currency_id.name"/>
-                                        </td>
-                                        <td>
-                                            <t t-esc="line.price_total"/>
-                                        </td>
-                                    </tr>
-                                </t>
+                                <!-- Empty row to complete Seller/Exporter rowspan if needed, 
+                                     or just add more content here later -->
                                 <tr>
-                                    <td/>
-                                    <td/>
-                                    <td/>
-                                    <td/>
-                                    <td/>
-                                    <td/>
-                                    <td>
-                                        <t t-esc="total_gross"/>
-                                    </td>
-                                    <td/>
-                                    <td/>
-                                    <td>
-                                        <t t-esc="total_net"/>
-                                    </td>
-                                    <td/>
-                                    <td/>
-                                    <td/>
-                                    <td>
-                                        <t t-esc="total_amount"/>
-                                    </td>
+                                    <td style="border:0px;"></td>
+                                    <td style="border:0px;"></td>
                                 </tr>
                             </table>
                         </div>
 
+                        <div class="row mt-3">
+                            <div class="col-12 text-center"><strong>Commercial Invoice</strong></div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <table style="border:1px solid white; width: 100%;">
+                                <thead>
+                                    <tr style="border-bottom:1px solid black;">
+                                        <td><strong>Container</strong></td>
+                                        <td><strong>Quantity</strong></td>
+                                        <td><strong>Box</strong></td>
+                                        <td><strong>Product</strong></td>
+                                        <td><strong>Variety</strong></td>
+                                        <td><strong>Bruto</strong></td>
+                                        <td><strong>Total Gross</strong></td>
+                                        <td><strong>UoM</strong></td>
+                                        <td><strong>Netto</strong></td>
+                                        <td><strong>Total Net</strong></td>
+                                        <td><strong>UoM</strong></td>
+                                        <td><strong>Price</strong></td>
+                                        <td><strong>Curr.</strong></td>
+                                        <td><strong>Amount</strong></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="total_gross" t-value="0"/>
+                                    <t t-set="total_net" t-value="0"/>
+                                    <t t-set="total_amount" t-value="0"/>
+                                    
+                                    <t t-foreach="o.invoice_line_ids" t-as="line">
+                                        <t t-set="line_gross" t-value="(line.product_id.weight or 0) * line.quantity"/>
+                                        <t t-set="line_net" t-value="(line.product_id.net_weight or 0) * line.quantity"/>
+                                        <t t-set="total_gross" t-value="total_gross + line_gross"/>
+                                        <t t-set="total_net" t-value="total_net + line_net"/>
+                                        <t t-set="total_amount" t-value="total_amount + line.price_total"/>
+                                        
+                                        <tr style="border-bottom:1px solid #eee;">
+                                            <td><t t-esc="line.container_no"/></td>
+                                            <td><t t-esc="line.quantity"/></td>
+                                            <td><t t-esc="line.pantera_product_box_id.name"/></td>
+                                            <td><t t-esc="line.product_id.name"/></td>
+                                            <td><t t-esc="line.pantera_product_variety_id.name"/></td>
+                                            <td><t t-esc="line.product_id.weight"/></td>
+                                            <td><t t-esc="line_gross"/></td>
+                                            <td><t t-esc="line.product_uom_id.name"/></td>
+                                            <td><t t-esc="line.product_id.net_weight"/></td>
+                                            <td><t t-esc="line_net"/></td>
+                                            <td><t t-esc="line.product_uom_id.name"/></td>
+                                            <td><t t-esc="line.price_unit"/></td>
+                                            <td><t t-esc="line.currency_id.name"/></td>
+                                            <td><t t-esc="line.price_total"/></td>
+                                        </tr>
+                                    </t>
+                                    
+                                    <tr style="font-weight:bold; border-top:2px solid black;">
+                                        <td colspan="6">TOTALS</td>
+                                        <td><t t-esc="total_gross"/></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><t t-esc="total_net"/></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><t t-esc="total_amount"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </t>
             </t>
@@ -358,7 +228,6 @@
             </t>
         </template>
 
-
         <record id="action_report_inv_pantera" model="ir.actions.report">
             <field name="name">Pantera Invoice</field>
             <field name="model">account.move</field>
@@ -368,8 +237,5 @@
             <field name="print_report_name">'Invoice - %s' % (object.name)</field>
             <field name="paperformat_id" ref="pantera_invoice.paperformat_report_inv_pantera"/>
         </record>
-
-
     </data>
 </odoo>
-
