@@ -38,11 +38,11 @@
             </div> -->
             <div class="header" style="text-align: center;">
                 <t t-if="doc.with_context(lang='en_US').brand_id">
-                    <img t-att-src="image_data_uri(doc.brand_id.image_1920)" style="max-height: 150px;object-fit: contain;"
+                    <img t-att-src="image_data_uri(doc.brand_id.image_1920)" style="align: left;max-height: 150px;object-fit: contain;"
                          alt="Logo"/>
                 </t>
                 <t t-else="">
-                    <img t-att-src="image_data_uri(company.logo)" style="max-height: 150px;object-fit: contain;"
+                    <img t-att-src="image_data_uri(company.logo)" style="align: left;max-height: 150px;object-fit: contain;"
                          alt="Logo"/>
                 </t>
             </div>
@@ -85,8 +85,45 @@
                                     <td style="border:0px;">
                                         <t t-esc="doc.name"/>
                                     </td>
+								</tr>
+								<tr style="border:0px;">
+                                    <td style="border:0px;">
+                                        <strong>Date:</strong>
+                                    </td>
+                                    <td style="border:0px;">
+                                        <t t-esc="doc.invoice_date"/>
+                                    </td>
+                                </tr>
+								<tr>
+									<!----shipper details-->
+									<td rowspan="3" style="border:0px;">
+                                        <strong>Shipper:</strong>
+                                    </td>
+									<td rowspan="3" style="border:0px;">
+										<t t-esc="doc.company_id.name"/>
+										<br/>
+										<t t-if="doc.company_id.street">
+											<t t-esc="doc.company_id.street"/>
+										</t>
+										<br/>
+										<t t-esc="doc.company_id.city"/>, <t t-esc="doc.company_id.state_id.name"/>,
+										<t t-esc="doc.company_id.country_id.name"/>
+										<br/>
+										<t t-if="doc.company_id.phone">
+											<strong>Tel:</strong>
+											<t t-esc="doc.company_id.phone"/>
+										</t>
+										<br/>
+									</td>
+                                        <!--                                        <t t-if="o.partner_id.vat">-->
+                                        <!--                                             <strong>Vat: </strong><t t-esc="o.partner_id.vat"/>-->
+                                        <!--                                        </t>-->
+
+
+                                    </td>
+									<!--customer details-->
                                     <td rowspan="3" style="border:0px;">
-                                        <strong>Buyer:</strong>
+                                        <strong>Consginee:</strong>
                                     </td>
                                     <td rowspan="3" style="border:0px;">
                                         <t t-esc="doc.partner_id.name"/>
@@ -110,14 +147,7 @@
 
                                     </td>
                                 </tr>
-                                <tr style="border:0px;">
-                                    <td style="border:0px;">
-                                        <strong>Date:</strong>
-                                    </td>
-                                    <td style="border:0px;">
-                                        <t t-esc="doc.invoice_date"/>
-                                    </td>
-                                </tr>
+                                
                                 <tr style="border:0px;">
                                     <td style="border:0px;">
                                         <strong>Terms:</strong>
