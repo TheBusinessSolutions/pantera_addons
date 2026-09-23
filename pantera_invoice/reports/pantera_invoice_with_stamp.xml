@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Template for the document content with stamp -->
+        <template id="report_inv_pantera_with_stamp_document">
+            <t t-foreach="doc" t-as="o">
+                <t t-call="pantera_invoice.external_layout_inv_pantera">
+                    <style>td{padding:5px;}</style>
+                    <div class="page" style="font-family: 'Tajawal-Regular'; position: relative;">
+                        
+                        <!-- Stamp Image Positioned Absolutely -->
+                        <!-- Adjust top/right values to move the stamp where you want it -->
+                        <t t-if="o.company_id.pantera_stamp_image">
+                            <div style="position: absolute; top: 150px; right: 50px; opacity: 0.9; z-index: 10;">
+                                <img t-att-src="image_data_uri(o.company_id.pantera_stamp_image)" 
+                                     style="max-width: 150px; max-height: 150px; object-fit: contain;"/>
+                            </div>
+                        </t>
+
+                        <!-- Original Content from report_inv_pantera_document -->
+                        <div class="row">
+                            <table style="border:1px solid white; width: 100%;">
+                                <tr style="border:0px;">
+                                    <td style="border:0px;"><strong>Invoice No.:</strong></td>
+                                    <td style="border:0px;"><t t-esc="o.name"/></td>
+                                    <td style="border:0px;"></td>
+                                    <td style="border:0px;"></td>
+                                </tr>
+                                <tr style="border:0px;">
+                                    <td style="border:0px;"><strong>Date:</strong></td>
+                                    <td style="border:0px;"><t t-esc="o.invoice_date"/></td>
+                                    <td style="border:0px;"></td>
+                                    <td style="border:0px;"></td>
+                                </tr>
+                                <tr>
+                                    <td style="border:0px;"><strong>Shipper:</strong></td>
+                                    <td rowspan="3" style="border:0px; vertical-align: top;">
+                                        <t t-esc="o.company_id.name"/><br/>
+                                        <t t-if="o.company_id.street"><t t-esc="o.company_id.street"/><br/></t>
+                                        <t t-esc="o.company_id.city"/>
+                                        <t t-if="o.company_id.state_id">, <t t-esc="o.company_id.state_id.name"/></t>
+                                        <t t-if="o.company_id.country_id">, <t t-esc="o.company_id.country_id.name"/></t><br/>
+                                        <t t-if="o.company_id.phone"><strong>Tel:</strong> <t t-esc="o.company_id.phone"/></t><br/>
+                                    </td>
+                                    <td style="border:0px;"><strong>Consignee:</strong></td>
+                                    <td rowspan="3" style="border:0px; vertical-align: top;">
+                                        <t t-esc="o.partner_id.name"/><br/>
+                                        <t t-if="o.partner_id.street"><t t-esc="o.partner_id.street"/><br/></t>
+                                        <t t-esc="o.partner_id.city"/>
+                                        <t t-if="o.partner_id.state_id">, <t t-esc="o.partner_id.state_id.name"/></t>
+                                        <t t-if="o.partner_id.country_id">, <t t-esc="o.partner_id.country_id.name"/></t><br/>
+                                        <t t-if="o.partner_id.phone"><strong>Tel:</strong> <t t-esc="o.partner_id.phone"/></t><br/>
+                                    </td>
+                                </tr>
+                                <tr style="border:0px;">
+                                    <td style="border:0px;"><strong>Terms:</strong></td>
+                                    <td style="border:0px;"></td>
+                                </tr>
+                                <tr style="border:0px;">
+                                    <td style="border:0px;"><strong>Vessel:</strong></td>
+                                    <td style="border:0px;"><t t-esc="o.vessel"/></td>
+                                </tr>
+                                <tr style="border:0px;">
+                                    <td style="border:0px;"><strong>Seller:</strong></td>
+                                    <td rowspan="2" style="border:0px; vertical-align: top;">
+                                        <t t-esc="o.seller_id.name"/><br/>
+                                        <t t-if="o.seller_id.street"><t t-esc="o.seller_id.street"/><br/></t>
+                                        <t t-esc="o.seller_id.city"/>
+                                        <t t-if="o.seller_id.state_id">, <t t-esc="o.seller_id.state_id.name"/></t>
+                                        <t t-if="o.seller_id.country_id">, <t t-esc="o.seller_id.country_id.name"/></t><br/>
+                                        <t t-if="o.seller_id.phone"><strong>Tel:</strong> <t t-esc="o.seller_id.phone"/></t><br/>
+                                    </td>
+                                    <td style="border:0px;"><strong>Exporter:</strong></td>
+                                    <td rowspan="2" style="border:0px; vertical-align: top;">
+                                        <t t-esc="o.exporter_id.name"/><br/>
+                                        <t t-if="o.exporter_id.street"><t t-esc="o.exporter_id.street"/><br/></t>
+                                        <t t-esc="o.exporter_id.city"/>
+                                        <t t-if="o.exporter_id.state_id">, <t t-esc="o.exporter_id.state_id.name"/></t>
+                                        <t t-if="o.exporter_id.country_id">, <t t-esc="o.exporter_id.country_id.name"/></t><br/>
+                                        <t t-if="o.exporter_id.phone"><strong>Tel:</strong> <t t-esc="o.exporter_id.phone"/></t><br/>
+                                    </td>
+                                </tr>
+                                <tr style="border:0px;">
+                                    <td style="border:0px;"></td>
+                                    <td style="border:0px;"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-12" style="text-align:center;margin:5px;">
+                                <strong>Commercial Invoice</strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <table style="border:1px solid white; width: 100%;">
+                                <tr style="border:0px;">
+                                    <td style="border:0px;border-bottom:1px solid;"><t t-set="total_net" t-value="0"/><strong>Container</strong></td>
+                                    <td style="border:0px;border-bottom:1px solid;"><strong>Quantity</strong></td>
+                                    <td style="border:0px;border-bottom:1px solid;"><strong>Box</strong></td>
+                                    <td style="border:0px;border-bottom:1px solid;"><strong>Product</strong></td>
+                                    <td style="border:0px;border-bottom:1px solid;"><strong>Variety</strong></td>
+                                    <td style="border:0px;border-bottom:1px solid;"><strong>Bruto</strong></td>
+                                    <td style="border:0px;border-bottom:1px solid;"/></td>
+                                    <td style="border:0px;border-bottom:1px solid;"/></td>
+                                    <td style="border:0px;border-bottom:1px solid;"><strong>Netto</strong></td>
+                                    <td style="border:0px;border-bottom:1px solid;"/></td>
+                                    <td style="border:0px;border-bottom:1px solid;"/></td>
+                                    <td style="border:0px;border-bottom:1px solid;"><strong>Price</strong></td>
+                                    <td style="border:0px;border-bottom:1px solid;"/></td>
+                                    <td style="border:0px;border-bottom:1px solid;"><strong>Amount</strong></td>
+                                </tr>
+                                <t t-set="total_gross" t-value="0"/>
+                                <t t-set="total_net" t-value="0"/>
+                                <t t-set="total_amount" t-value="0"/>
+                                <t t-foreach="o.invoice_line_ids" t-as="line">
+                                    <tr style="border-bottom:1px solid black;">
+                                        <t t-set="total_line_gross" t-value="(line.product_id.weight or 0) * line.quantity"/>
+                                        <t t-set="total_line_net" t-value="(line.product_id.net_weight or 0) * line.quantity"/>
+                                        <t t-set="total_gross" t-value="total_gross+total_line_gross"/>
+                                        <t t-set="total_net" t-value="total_net+total_line_net"/>
+                                        <t t-set="total_amount" t-value="total_amount+line.price_total"/>
+                                        <td><t t-esc="line.container_no"/></td>
+                                        <td><t t-esc="line.quantity"/></td>
+                                        <td><t t-esc="line.pantera_product_box_id.name"/></td>
+                                        <td><t t-esc="line.product_id.name"/></td>
+                                        <td><t t-esc="line.pantera_product_variety_id.name"/></td>
+                                        <td><t t-esc="line.product_id.weight"/></td>
+                                        <td><t t-esc="total_line_gross"/></td>
+                                        <td><t t-esc="line.product_uom_id.name"/></td>
+                                        <td><t t-esc="line.product_id.net_weight"/></td>
+                                        <td><t t-esc="total_line_net"/></td>
+                                        <td><t t-esc="line.product_uom_id.name"/></td>
+                                        <td><t t-esc="line.price_unit"/></td>
+                                        <td><t t-esc="line.currency_id.name"/></td>
+                                        <td><t t-esc="line.price_total"/></td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td/><td/><td/><td/><td/><td/>
+                                    <td><t t-esc="total_gross"/></td>
+                                    <td/><td/>
+                                    <td><t t-esc="total_net"/></td>
+                                    <td/><td/><td/>
+                                    <td><t t-esc="total_amount"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <!-- Wrapper Template -->
+        <template id="report_inv_pantera_with_stamp">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="pantera_invoice.report_inv_pantera_with_stamp_document"/>
+                </t>
+            </t>
+        </template>
+
+        <!-- Report Action -->
+        <record id="action_report_inv_pantera_with_stamp" model="ir.actions.report">
+            <field name="name">Pantera Invoice With Stamp</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">pantera_invoice.report_inv_pantera_with_stamp</field>
+            <field name="report_file">pantera_invoice.report_inv_pantera_with_stamp</field>
+            <field name="print_report_name">'Invoice With Stamp - %s' % (object.name)</field>
+            <field name="paperformat_id" ref="pantera_invoice.paperformat_report_inv_pantera"/>
+        </record>
+    </data>
+</odoo>
