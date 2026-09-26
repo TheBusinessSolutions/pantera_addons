@@ -2,3 +2,4 @@
 
 from . import models
 from . import product_data
+from . import company_setting.py

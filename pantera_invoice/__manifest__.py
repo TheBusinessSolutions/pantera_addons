@@ -20,8 +20,10 @@
         'security/ir.model.access.csv',
         'views/views.xml',
         'views/product_data.xml',
+        'views/company_res.xml',
         'reports/invoice_pantera_report.xml',
         'reports/pantera_packing_list_report.xml',
+        'reports/pantera_invoice_with_stamp.xml',
     ],
 
     'assets': {
