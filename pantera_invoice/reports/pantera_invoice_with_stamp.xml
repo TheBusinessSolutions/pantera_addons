@@ -1,13 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Template for the document content with stamp -->
+        <!-- We inherit the external layout to add the stamp to the footer ONLY for this report -->
+        <!-- Note: Since we want this stamp ONLY for this report, we create a custom external layout 
+             or we inject it directly into the document template's footer call. 
+             The cleanest way is to override the footer in the document template itself if possible, 
+             but since the footer is in external_layout, let's create a custom external layout for this report. -->
+
+        <template id="external_layout_inv_pantera_with_stamp">
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"/>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+            <div class="header" style="text-align: center;">
+                <t t-if="doc.with_context(lang='en_US').brand_id">
+                    <img t-att-src="image_data_uri(doc.brand_id.image_1920)" style="align: left;max-height: 150px;object-fit: contain;" alt="Logo"/>
+                </t>
+                <t t-else="">
+                    <img t-att-src="image_data_uri(company.logo)" style="align: left;max-height: 150px;object-fit: contain;" alt="Logo"/>
+                </t>
+            </div>
+            <div class="article o_report_layout_standard">
+                <t t-raw="0"/>
+            </div>
+            <div class="footer o_background_footer">
+                <!-- STAMP SECTION IN FOOTER -->
+                <t t-if="o.company_id.pantera_stamp_image">
+                    <div style="position: absolute; bottom: 30px; right: 20px; opacity: 0.9; z-index: 100;">
+                        <img t-att-src="image_data_uri(o.company_id.pantera_stamp_image)" 
+                             style="max-width: 150px; max-height: 150px; object-fit: contain;"/>
+                    </div>
+                </t>
+                
+                <div class="text-center" style="font-size:14px;">
+                    <div t-if="report_type == 'pdf'" class="text-muted">
+                        Page: <span class="page"/> of <span class="topage"/>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Template for the document content -->
         <template id="report_inv_pantera_with_stamp_document">
             <t t-foreach="doc" t-as="o">
-                <t t-call="pantera_invoice.external_layout_inv_pantera">
+                <!-- Use the NEW external layout with stamp in footer -->
+                <t t-call="pantera_invoice.external_layout_inv_pantera_with_stamp">
                     <style>td{padding:5px;}</style>
-                    <!-- Added position: relative to ensure absolute children are positioned relative to this page -->
-                    <div class="page" style="font-family: 'Tajawal-Regular'; position: relative; min-height: 900px;">
+                    <div class="page" style="font-family: 'Tajawal-Regular';">
                         
                         <!-- Original Content from report_inv_pantera_document -->
                         <div class="row">
@@ -137,16 +178,6 @@
                                 </tr>
                             </table>
                         </div>
-
-                        <!-- Stamp Section: Placed at the end of the page div -->
-                        <t t-if="o.company_id.pantera_stamp_image">
-                            <!-- Using bottom: 50px to place it near the footer. Adjust as needed. -->
-                            <div style="position: absolute; bottom: 60px; right: 50px; opacity: 0.9; z-index: 10;">
-                                <img t-att-src="image_data_uri(o.company_id.pantera_stamp_image)" 
-                                     style="max-width: 150px; max-height: 150px; object-fit: contain;"/>
-                            </div>
-                        </t>
-
                     </div>
                 </t>
             </t>
