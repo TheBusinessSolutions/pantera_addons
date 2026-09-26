@@ -100,13 +100,13 @@
                                     <td style="border:0px;border-bottom:1px solid;"><strong>Product</strong></td>
                                     <td style="border:0px;border-bottom:1px solid;"><strong>Variety</strong></td>
                                     <td style="border:0px;border-bottom:1px solid;"><strong>Bruto</strong></td>
-                                    <td style="border:0px;border-bottom:1px solid;"/></td>
-                                    <td style="border:0px;border-bottom:1px solid;"/></td>
+                                    <td style="border:0px;border-bottom:1px solid;"/>
+                                    <td style="border:0px;border-bottom:1px solid;"/>
                                     <td style="border:0px;border-bottom:1px solid;"><strong>Netto</strong></td>
-                                    <td style="border:0px;border-bottom:1px solid;"/></td>
-                                    <td style="border:0px;border-bottom:1px solid;"/></td>
+                                    <td style="border:0px;border-bottom:1px solid;"/>
+                                    <td style="border:0px;border-bottom:1px solid;"/>
                                     <td style="border:0px;border-bottom:1px solid;"><strong>Price</strong></td>
-                                    <td style="border:0px;border-bottom:1px solid;"/></td>
+                                    <td style="border:0px;border-bottom:1px solid;"/>
                                     <td style="border:0px;border-bottom:1px solid;"><strong>Amount</strong></td>
                                 </tr>
                                 <t t-set="total_gross" t-value="0"/>
