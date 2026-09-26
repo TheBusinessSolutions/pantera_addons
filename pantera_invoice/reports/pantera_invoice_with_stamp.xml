@@ -10,12 +10,12 @@
                         
                         <!-- Stamp Image Positioned Absolutely -->
                         <!-- Adjust top/right values to move the stamp where you want it -->
-                        <t t-if="o.company_id.pantera_stamp_image">
+                        <!-- <t t-if="o.company_id.pantera_stamp_image">
                             <div style="position: absolute; top: 150px; right: 50px; opacity: 0.9; z-index: 10;">
                                 <img t-att-src="image_data_uri(o.company_id.pantera_stamp_image)" 
                                      style="max-width: 150px; max-height: 150px; object-fit: contain;"/>
                             </div>
-                        </t>
+                        </t> -->
 
                         <!-- Original Content from report_inv_pantera_document -->
                         <div class="row">
@@ -146,6 +146,13 @@
                             </table>
                         </div>
                     </div>
+                    <!--the stamp section-->
+                    <t t-if="o.company_id.pantera_stamp_image">
+                            <div style="position: absolute; top: 150px; right: 50px; opacity: 0.9; z-index: 10;">
+                                <img t-att-src="image_data_uri(o.company_id.pantera_stamp_image)" 
+                                     style="max-width: 150px; max-height: 150px; object-fit: contain;"/>
+                            </div>
+                    </t>
                 </t>
             </t>
         </template>
