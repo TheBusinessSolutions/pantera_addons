@@ -6,17 +6,9 @@
             <t t-foreach="doc" t-as="o">
                 <t t-call="pantera_invoice.external_layout_inv_pantera">
                     <style>td{padding:5px;}</style>
-                    <div class="page" style="font-family: 'Tajawal-Regular'; position: relative;">
+                    <!-- Added position: relative to ensure absolute children are positioned relative to this page -->
+                    <div class="page" style="font-family: 'Tajawal-Regular'; position: relative; min-height: 900px;">
                         
-                        <!-- Stamp Image Positioned Absolutely -->
-                        <!-- Adjust top/right values to move the stamp where you want it -->
-                        <!-- <t t-if="o.company_id.pantera_stamp_image">
-                            <div style="position: absolute; top: 150px; right: 50px; opacity: 0.9; z-index: 10;">
-                                <img t-att-src="image_data_uri(o.company_id.pantera_stamp_image)" 
-                                     style="max-width: 150px; max-height: 150px; object-fit: contain;"/>
-                            </div>
-                        </t> -->
-
                         <!-- Original Content from report_inv_pantera_document -->
                         <div class="row">
                             <table style="border:1px solid white; width: 100%;">
@@ -145,14 +137,17 @@
                                 </tr>
                             </table>
                         </div>
-                    </div>
-                    <!--the stamp section-->
-                    <t t-if="o.company_id.pantera_stamp_image">
-                            <div style="position: absolute; top: 150px; right: 50px; opacity: 0.9; z-index: 10;">
+
+                        <!-- Stamp Section: Placed at the end of the page div -->
+                        <t t-if="o.company_id.pantera_stamp_image">
+                            <!-- Using bottom: 50px to place it near the footer. Adjust as needed. -->
+                            <div style="position: absolute; bottom: 60px; right: 50px; opacity: 0.9; z-index: 10;">
                                 <img t-att-src="image_data_uri(o.company_id.pantera_stamp_image)" 
                                      style="max-width: 150px; max-height: 150px; object-fit: contain;"/>
                             </div>
-                    </t>
+                        </t>
+
+                    </div>
                 </t>
             </t>
         </template>
