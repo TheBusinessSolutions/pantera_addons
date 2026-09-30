@@ -1,191 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- We inherit the external layout to add the stamp to the footer ONLY for this report -->
-        <!-- Note: Since we want this stamp ONLY for this report, we create a custom external layout 
-             or we inject it directly into the document template's footer call. 
-             The cleanest way is to override the footer in the document template itself if possible, 
-             but since the footer is in external_layout, let's create a custom external layout for this report. -->
-
-        <template id="external_layout_inv_pantera_with_stamp">
+        <!-- Custom External Layout matching the PDF style -->
+        <template id="external_layout_inv_pantera_stamped">
             <t t-if="o and 'company_id' in o">
                 <t t-set="company" t-value="o.company_id"/>
             </t>
             <t t-if="not o or not 'company_id' in o">
                 <t t-set="company" t-value="res_company"/>
             </t>
-            <div class="header" style="text-align: center;">
+
+            <!-- Header -->
+            <div class="header" style="text-align: center; margin-bottom: 20px;">
                 <t t-if="doc.with_context(lang='en_US').brand_id">
-                    <img t-att-src="image_data_uri(doc.brand_id.image_1920)" style="align: left;max-height: 150px;object-fit: contain;" alt="Logo"/>
+                    <img t-att-src="image_data_uri(doc.brand_id.image_1920)" style="max-height: 120px; object-fit: contain;" alt="Logo"/>
                 </t>
                 <t t-else="">
-                    <img t-att-src="image_data_uri(company.logo)" style="align: left;max-height: 150px;object-fit: contain;" alt="Logo"/>
+                    <img t-att-src="image_data_uri(company.logo)" style="max-height: 120px; object-fit: contain;" alt="Logo"/>
                 </t>
             </div>
-            <div class="article o_report_layout_standard">
+
+            <!-- Article Content -->
+            <div class="article o_report_layout_standard" style="font-family: 'Tajawal-Regular', Arial, sans-serif; font-size: 12px;">
                 <t t-raw="0"/>
             </div>
-            <div class="footer o_background_footer">
-                <!-- STAMP SECTION IN FOOTER -->
+
+            <!-- Footer with Stamp -->
+            <div class="footer o_background_footer" style="position: relative; min-height: 150px;">
+                <!-- STAMP PLACEMENT: Bottom Right of Footer -->
                 <t t-if="o.company_id.pantera_stamp_image">
-                    <!-- <div style="position: absolute; bottom: 30px; right: 20px; opacity: 0.9; z-index: 100;"> -->
-                    <div style="text-align: center; margin-top: 10px;">
+                    <div style="position: absolute; bottom: 10px; right: 10px; opacity: 0.9; z-index: 100;">
                         <img t-att-src="image_data_uri(o.company_id.pantera_stamp_image)" 
-                             style="max-width: 150px; max-height: 150px; object-fit: contain;"/>
+                             style="max-width: 140px; max-height: 140px; object-fit: contain;"/>
                     </div>
                 </t>
-                
-                <div class="text-center" style="font-size:14px;">
-                    <div t-if="report_type == 'pdf'" class="text-muted">
-                        Page: <span class="page"/> of <span class="topage"/>
-                    </div>
+
+                <!-- Page Number -->
+                <div class="text-center text-muted" style="font-size: 10px; margin-top: 10px;">
+                    Page: <span class="page"/> of <span class="topage"/>
                 </div>
             </div>
         </template>
 
-        <!-- Template for the document content -->
+        <!-- Main Document Template Matching Attached PDF Style -->
         <template id="report_inv_pantera_with_stamp_document">
             <t t-foreach="doc" t-as="o">
-                <!-- Use the NEW external layout with stamp in footer -->
-                <t t-call="pantera_invoice.external_layout_inv_pantera_with_stamp">
-                    <style>td{padding:5px;}</style>
-                    <div class="page" style="font-family: 'Tajawal-Regular';">
-                        
-                        <!-- Original Content from report_inv_pantera_document -->
-                        <div class="row">
-                            <table style="border:1px solid white; width: 100%;">
-                                <tr style="border:0px;">
-                                    <td style="border:0px;"><strong>Invoice No.:</strong></td>
-                                    <td style="border:0px;"><t t-esc="o.name"/></td>
-                                    <td style="border:0px;"></td>
-                                    <td style="border:0px;"></td>
-                                </tr>
-                                <tr style="border:0px;">
-                                    <td style="border:0px;"><strong>Date:</strong></td>
-                                    <td style="border:0px;"><t t-esc="o.invoice_date"/></td>
-                                    <td style="border:0px;"></td>
-                                    <td style="border:0px;"></td>
-                                </tr>
-                                <tr>
-                                    <td style="border:0px;"><strong>Shipper:</strong></td>
-                                    <td rowspan="3" style="border:0px; vertical-align: top;">
-                                        <t t-esc="o.company_id.name"/><br/>
-                                        <t t-if="o.company_id.street"><t t-esc="o.company_id.street"/><br/></t>
-                                        <t t-esc="o.company_id.city"/>
-                                        <t t-if="o.company_id.state_id">, <t t-esc="o.company_id.state_id.name"/></t>
-                                        <t t-if="o.company_id.country_id">, <t t-esc="o.company_id.country_id.name"/></t><br/>
-                                        <t t-if="o.company_id.phone"><strong>Tel:</strong> <t t-esc="o.company_id.phone"/></t><br/>
-                                    </td>
-                                    <td style="border:0px;"><strong>Consignee:</strong></td>
-                                    <td rowspan="3" style="border:0px; vertical-align: top;">
-                                        <t t-esc="o.partner_id.name"/><br/>
-                                        <t t-if="o.partner_id.street"><t t-esc="o.partner_id.street"/><br/></t>
-                                        <t t-esc="o.partner_id.city"/>
-                                        <t t-if="o.partner_id.state_id">, <t t-esc="o.partner_id.state_id.name"/></t>
-                                        <t t-if="o.partner_id.country_id">, <t t-esc="o.partner_id.country_id.name"/></t><br/>
-                                        <t t-if="o.partner_id.phone"><strong>Tel:</strong> <t t-esc="o.partner_id.phone"/></t><br/>
-                                    </td>
-                                </tr>
-                                <tr style="border:0px;">
-                                    <td style="border:0px;"><strong>Terms:</strong></td>
-                                    <td style="border:0px;"></td>
-                                </tr>
-                                <tr style="border:0px;">
-                                    <td style="border:0px;"><strong>Vessel:</strong></td>
-                                    <td style="border:0px;"><t t-esc="o.vessel"/></td>
-                                </tr>
-                                <tr style="border:0px;">
-                                    <td style="border:0px;"><strong>Seller:</strong></td>
-                                    <td rowspan="2" style="border:0px; vertical-align: top;">
-                                        <t t-esc="o.seller_id.name"/><br/>
-                                        <t t-if="o.seller_id.street"><t t-esc="o.seller_id.street"/><br/></t>
-                                        <t t-esc="o.seller_id.city"/>
-                                        <t t-if="o.seller_id.state_id">, <t t-esc="o.seller_id.state_id.name"/></t>
-                                        <t t-if="o.seller_id.country_id">, <t t-esc="o.seller_id.country_id.name"/></t><br/>
-                                        <t t-if="o.seller_id.phone"><strong>Tel:</strong> <t t-esc="o.seller_id.phone"/></t><br/>
-                                    </td>
-                                    <td style="border:0px;"><strong>Exporter:</strong></td>
-                                    <td rowspan="2" style="border:0px; vertical-align: top;">
-                                        <t t-esc="o.exporter_id.name"/><br/>
-                                        <t t-if="o.exporter_id.street"><t t-esc="o.exporter_id.street"/><br/></t>
-                                        <t t-esc="o.exporter_id.city"/>
-                                        <t t-if="o.exporter_id.state_id">, <t t-esc="o.exporter_id.state_id.name"/></t>
-                                        <t t-if="o.exporter_id.country_id">, <t t-esc="o.exporter_id.country_id.name"/></t><br/>
-                                        <t t-if="o.exporter_id.phone"><strong>Tel:</strong> <t t-esc="o.exporter_id.phone"/></t><br/>
-                                    </td>
-                                </tr>
-                                <tr style="border:0px;">
-                                    <td style="border:0px;"></td>
-                                    <td style="border:0px;"></td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="row">
-                            <div class="col-12" style="text-align:center;margin:5px;">
-                                <strong>Commercial Invoice</strong>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <table style="border:1px solid white; width: 100%;">
-                                <tr style="border:0px;">
-                                    <td style="border:0px;border-bottom:1px solid;"><t t-set="total_net" t-value="0"/><strong>Container</strong></td>
-                                    <td style="border:0px;border-bottom:1px solid;"><strong>Quantity</strong></td>
-                                    <td style="border:0px;border-bottom:1px solid;"><strong>Box</strong></td>
-                                    <td style="border:0px;border-bottom:1px solid;"><strong>Product</strong></td>
-                                    <td style="border:0px;border-bottom:1px solid;"><strong>Variety</strong></td>
-                                    <td style="border:0px;border-bottom:1px solid;"><strong>Bruto</strong></td>
-                                    <td style="border:0px;border-bottom:1px solid;"/>
-                                    <td style="border:0px;border-bottom:1px solid;"/>
-                                    <td style="border:0px;border-bottom:1px solid;"><strong>Netto</strong></td>
-                                    <td style="border:0px;border-bottom:1px solid;"/>
-                                    <td style="border:0px;border-bottom:1px solid;"/>
-                                    <td style="border:0px;border-bottom:1px solid;"><strong>Price</strong></td>
-                                    <td style="border:0px;border-bottom:1px solid;"/>
-                                    <td style="border:0px;border-bottom:1px solid;"><strong>Amount</strong></td>
-                                </tr>
-                                <t t-set="total_gross" t-value="0"/>
-                                <t t-set="total_net" t-value="0"/>
-                                <t t-set="total_amount" t-value="0"/>
-                                <t t-foreach="o.invoice_line_ids" t-as="line">
-                                    <tr style="border-bottom:1px solid black;">
-                                        <t t-set="total_line_gross" t-value="(line.product_id.weight or 0) * line.quantity"/>
-                                        <t t-set="total_line_net" t-value="(line.product_id.net_weight or 0) * line.quantity"/>
-                                        <t t-set="total_gross" t-value="total_gross+total_line_gross"/>
-                                        <t t-set="total_net" t-value="total_net+total_line_net"/>
-                                        <t t-set="total_amount" t-value="total_amount+line.price_total"/>
-                                        <td><t t-esc="line.container_no"/></td>
-                                        <td><t t-esc="line.quantity"/></td>
-                                        <td><t t-esc="line.pantera_product_box_id.name"/></td>
-                                        <td><t t-esc="line.product_id.name"/></td>
-                                        <td><t t-esc="line.pantera_product_variety_id.name"/></td>
-                                        <td><t t-esc="line.product_id.weight"/></td>
-                                        <td><t t-esc="total_line_gross"/></td>
-                                        <td><t t-esc="line.product_uom_id.name"/></td>
-                                        <td><t t-esc="line.product_id.net_weight"/></td>
-                                        <td><t t-esc="total_line_net"/></td>
-                                        <td><t t-esc="line.product_uom_id.name"/></td>
-                                        <td><t t-esc="line.price_unit"/></td>
-                                        <td><t t-esc="line.currency_id.name"/></td>
-                                        <td><t t-esc="line.price_total"/></td>
+                <t t-call="pantera_invoice.external_layout_inv_pantera_stamped">
+                    
+                    <!-- 1. Top Info Section (Shipper / Consignee / Details) -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11px;">
+                        <tr>
+                            <!-- Shipper Column -->
+                            <td style="width: 35%; vertical-align: top; padding: 5px; border: 1px solid #ddd;">
+                                <strong>Shipper:</strong><br/>
+                                <t t-esc="o.company_id.name"/><br/>
+                                <t t-esc="o.company_id.street"/><br/>
+                                <t t-esc="o.company_id.city"/>, <t t-esc="o.company_id.country_id.name"/><br/>
+                                Tax ID: <t t-esc="o.company_id.vat"/>
+                            </td>
+                            <!-- Consignee Column -->
+                            <td style="width: 35%; vertical-align: top; padding: 5px; border: 1px solid #ddd;">
+                                <strong>Consignee:</strong><br/>
+                                <t t-esc="o.partner_id.name"/><br/>
+                                <t t-esc="o.partner_id.street"/><br/>
+                                <t t-esc="o.partner_id.city"/>, <t t-esc="o.partner_id.country_id.name"/><br/>
+                                VAT: <t t-esc="o.partner_id.vat"/><br/>
+                                Tel: <t t-esc="o.partner_id.phone"/>
+                            </td>
+                            <!-- Invoice Details Column -->
+                            <td style="width: 30%; vertical-align: top; padding: 5px; border: 1px solid #ddd;">
+                                <table style="width: 100%; font-size: 11px;">
+                                    <tr><td><strong>Invoice No:</strong></td><td style="text-align: right;"><t t-esc="o.name"/></td></tr>
+                                    <tr><td><strong>Date:</strong></td><td style="text-align: right;"><t t-esc="o.invoice_date"/></td></tr>
+                                    <tr><td><strong>No of Pallets:</strong></td><td style="text-align: right;">-</td></tr>
+                                    <tr><td><strong>Inco Terms:</strong></td><td style="text-align: right;"><t t-esc="o.invoice_incoterm_id.code"/></td></tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <!-- POL / POD / Container / Lot -->
+                            <td colspan="3" style="padding: 0;">
+                                <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                                    <tr>
+                                        <td style="width: 25%; padding: 5px; border: 1px solid #ddd;"><strong>POL:</strong> <t t-esc="o.pol"/></td>
+                                        <td style="width: 25%; padding: 5px; border: 1px solid #ddd;"><strong>POD:</strong> <t t-esc="o.pod"/></td>
+                                        <td style="width: 25%; padding: 5px; border: 1px solid #ddd;"><strong>Container No:</strong> <t t-esc="o.invoice_line_ids[:1].container_no"/></td>
+                                        <td style="width: 25%; padding: 5px; border: 1px solid #ddd;"><strong>Lot No:</strong> -</td>
                                     </tr>
-                                </t>
-                                <tr>
-                                    <td/><td/><td/><td/><td/><td/>
-                                    <td><t t-esc="total_gross"/></td>
-                                    <td/><td/>
-                                    <td><t t-esc="total_net"/></td>
-                                    <td/><td/><td/>
-                                    <td><t t-esc="total_amount"/></td>
-                                </tr>
+                                    <tr>
+                                        <td style="padding: 5px; border: 1px solid #ddd;"><strong>ETD:</strong> <t t-esc="o.etd_date"/></td>
+                                        <td style="padding: 5px; border: 1px solid #ddd;"><strong>ETA:</strong> <t t-esc="o.eta_date"/></td>
+                                        <td colspan="2" style="padding: 5px; border: 1px solid #ddd;"><strong>Vessel:</strong> <t t-esc="o.vessel"/></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- 2. Line Items Table -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11px;">
+                        <thead>
+                            <tr style="background-color: #f2f2f2; border: 1px solid #000;">
+                                <th style="padding: 6px; border: 1px solid #000; text-align: left;">Variety</th>
+                                <th style="padding: 6px; border: 1px solid #000; text-align: left;">Package</th>
+                                <th style="padding: 6px; border: 1px solid #000; text-align: right;">G.W (KG)</th>
+                                <th style="padding: 6px; border: 1px solid #000; text-align: right;">N.W (KG)</th>
+                                <th style="padding: 6px; border: 1px solid #000; text-align: right;">Qty</th>
+                                <th style="padding: 6px; border: 1px solid #000; text-align: right;">Price/Carton</th>
+                                <th style="padding: 6px; border: 1px solid #000; text-align: right;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="total_gross" t-value="0"/>
+                            <t t-set="total_net" t-value="0"/>
+                            <t t-set="total_qty" t-value="0"/>
+                            <t t-set="total_amount" t-value="0"/>
+                            
+                            <t t-foreach="o.invoice_line_ids.filtered(lambda l: l.display_type == 'product')" t-as="line">
+                                <t t-set="line_gross" t-value="(line.product_id.weight or 0) * line.quantity"/>
+                                <t t-set="line_net" t-value="(line.product_id.net_weight or 0) * line.quantity"/>
+                                <t t-set="total_gross" t-value="total_gross + line_gross"/>
+                                <t t-set="total_net" t-value="total_net + line_net"/>
+                                <t t-set="total_qty" t-value="total_qty + line.quantity"/>
+                                <t t-set="total_amount" t-value="total_amount + line.price_total"/>
                                 
-                            </table>
-                        </div>
+                                <tr style="border: 1px solid #000;">
+                                    <td style="padding: 5px; border: 1px solid #000;"><t t-esc="line.pantera_product_variety_id.name or line.product_id.name"/></td>
+                                    <td style="padding: 5px; border: 1px solid #000;"><t t-esc="line.pantera_product_box_id.name"/></td>
+                                    <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.3f}'.format(line_gross)"/></td>
+                                    <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.3f}'.format(line_net)"/></td>
+                                    <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.0f}'.format(line.quantity)"/></td>
+                                    <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.2f}'.format(line.price_unit)"/></td>
+                                    <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.2f}'.format(line.price_total)"/></td>
+                                </tr>
+                            </t>
+                            
+                            <!-- Totals Row -->
+                            <tr style="border: 1px solid #000; font-weight: bold; background-color: #f9f9f9;">
+                                <td style="padding: 5px; border: 1px solid #000;" colspan="2">Total</td>
+                                <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.3f}'.format(total_gross)"/></td>
+                                <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.3f}'.format(total_net)"/></td>
+                                <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.0f}'.format(total_qty)"/></td>
+                                <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="o.currency_id.symbol"/></td>
+                                <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.2f}'.format(total_amount)"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- 3. Amount in Words -->
+                    <div style="margin-bottom: 15px; font-size: 11px; font-style: italic;">
+                        <t t-esc="o.amount_to_text"/>
                     </div>
+
+                    <!-- 4. Bank Details Section -->
+                    <table style="width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 10px;">
+                        <tr>
+                            <td style="width: 50%; vertical-align: top; padding: 5px;">
+                                <strong>Bank Details:</strong><br/>
+                                Bank Name: Egyptian Gulf Bank<br/>
+                                Swift Code: EGGBEGCAXXX<br/>
+                                Address: El Orman Plaza Building, Giza
+                            </td>
+                            <td style="width: 50%; vertical-align: top; padding: 5px;">
+                                <strong>Account Name:</strong> Pantera Company<br/>
+                                EGP: 622176-001<br/>
+                                USD: 622176-002<br/>
+                                EUR: 622176-003
+                            </td>
+                        </tr>
+                    </table>
+
                 </t>
             </t>
         </template>
 
-        <!-- Wrapper Template -->
+        <!-- Wrapper -->
         <template id="report_inv_pantera_with_stamp">
             <t t-call="web.html_container">
                 <t t-foreach="docs" t-as="doc">
