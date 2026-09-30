@@ -147,9 +147,9 @@
                         </tbody>
                     </table>
 
-                    <!-- 3. Amount in Words -->
+                    <!-- 3. Amount in Words (FIXED) -->
                     <div style="margin-bottom: 15px; font-size: 11px; font-style: italic;">
-                        <t t-esc="o.amount_to_text"/>
+                        <t t-esc="o.currency_id.amount_to_text(o.amount_total)"/>
                     </div>
 
                     <!-- 4. Bank Details Section -->
