@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Custom External Layout matching the PDF style -->
+        <!-- Custom External Layout for Stamped Report (Left Aligned Logo) -->
         <template id="external_layout_inv_pantera_stamped">
             <t t-if="o and 'company_id' in o">
                 <t t-set="company" t-value="o.company_id"/>
@@ -9,9 +9,8 @@
             <t t-if="not o or not 'company_id' in o">
                 <t t-set="company" t-value="res_company"/>
             </t>
-
-            <!-- Header -->
-            <div class="header" style="text-align: center; margin-bottom: 20px;">
+            <!-- Header with Left Alignment -->
+            <div class="header" style="text-align: left; margin-bottom: 10px;">
                 <t t-if="doc.with_context(lang='en_US').brand_id">
                     <img t-att-src="image_data_uri(doc.brand_id.image_1920)" style="max-height: 120px; object-fit: contain;" alt="Logo"/>
                 </t>
@@ -19,13 +18,9 @@
                     <img t-att-src="image_data_uri(company.logo)" style="max-height: 120px; object-fit: contain;" alt="Logo"/>
                 </t>
             </div>
-
-            <!-- Article Content -->
             <div class="article o_report_layout_standard" style="font-family: 'Tajawal-Regular', Arial, sans-serif; font-size: 12px;">
                 <t t-raw="0"/>
             </div>
-
-            <!-- Footer with Stamp -->
             <div class="footer o_background_footer" style="position: relative; min-height: 150px;">
                 <!-- STAMP PLACEMENT: Bottom Right of Footer -->
                 <t t-if="o.company_id.pantera_stamp_image">
@@ -34,8 +29,6 @@
                              style="max-width: 140px; max-height: 140px; object-fit: contain;"/>
                     </div>
                 </t>
-
-                <!-- Page Number -->
                 <div class="text-center text-muted" style="font-size: 10px; margin-top: 10px;">
                     Page: <span class="page"/> of <span class="topage"/>
                 </div>
@@ -47,10 +40,9 @@
             <t t-foreach="doc" t-as="o">
                 <t t-call="pantera_invoice.external_layout_inv_pantera_stamped">
                     
-                    <!-- 1. Top Info Section (Shipper / Consignee / Details) -->
+                    <!-- 1. Top Info Section -->
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11px;">
                         <tr>
-                            <!-- Shipper Column -->
                             <td style="width: 35%; vertical-align: top; padding: 5px; border: 1px solid #ddd;">
                                 <strong>Shipper:</strong><br/>
                                 <t t-esc="o.company_id.name"/><br/>
@@ -58,7 +50,6 @@
                                 <t t-esc="o.company_id.city"/>, <t t-esc="o.company_id.country_id.name"/><br/>
                                 Tax ID: <t t-esc="o.company_id.vat"/>
                             </td>
-                            <!-- Consignee Column -->
                             <td style="width: 35%; vertical-align: top; padding: 5px; border: 1px solid #ddd;">
                                 <strong>Consignee:</strong><br/>
                                 <t t-esc="o.partner_id.name"/><br/>
@@ -67,7 +58,6 @@
                                 VAT: <t t-esc="o.partner_id.vat"/><br/>
                                 Tel: <t t-esc="o.partner_id.phone"/>
                             </td>
-                            <!-- Invoice Details Column -->
                             <td style="width: 30%; vertical-align: top; padding: 5px; border: 1px solid #ddd;">
                                 <table style="width: 100%; font-size: 11px;">
                                     <tr><td><strong>Invoice No:</strong></td><td style="text-align: right;"><t t-esc="o.name"/></td></tr>
@@ -78,7 +68,6 @@
                             </td>
                         </tr>
                         <tr>
-                            <!-- POL / POD / Container / Lot -->
                             <td colspan="3" style="padding: 0;">
                                 <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
                                     <tr>
@@ -143,14 +132,16 @@
                                 <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.0f}'.format(total_qty)"/></td>
                                 <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="o.currency_id.symbol"/></td>
                                 <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.2f}'.format(total_amount)"/></td>
+                                <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="o.currency_id.amount_to_text(o.amount_total)"/></td>
+
                             </tr>
                         </tbody>
                     </table>
 
-                    <!-- 3. Amount in Words (FIXED) -->
-                    <div style="margin-bottom: 15px; font-size: 11px; font-style: italic;">
+                    <!-- 3. Amount in Words -->
+                    <!-- <div style="margin-bottom: 15px; font-size: 11px; font-style: italic;">
                         <t t-esc="o.currency_id.amount_to_text(o.amount_total)"/>
-                    </div>
+                    </div> -->
 
                     <!-- 4. Bank Details Section -->
                     <table style="width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 10px;">
