@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Custom External Layout for Stamped Report (Left Aligned Logo) -->
+        <!-- 1. Dedicated Paper Format for Stamped Report (Portrait) -->
+        <record id="paperformat_report_inv_pantera_stamped" model="report.paperformat">
+            <field name="name">Pantera Invoice Stamped</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">35</field>
+            <field name="margin_bottom">20</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">30</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <!-- 2. Custom External Layout for Stamped Report (Left Aligned Logo + Footer Stamp) -->
         <template id="external_layout_inv_pantera_stamped">
             <t t-if="o and 'company_id' in o">
                 <t t-set="company" t-value="o.company_id"/>
@@ -9,6 +24,7 @@
             <t t-if="not o or not 'company_id' in o">
                 <t t-set="company" t-value="res_company"/>
             </t>
+            
             <!-- Header with Left Alignment -->
             <div class="header" style="text-align: left; margin-bottom: 10px;">
                 <t t-if="doc.with_context(lang='en_US').brand_id">
@@ -18,11 +34,13 @@
                     <img t-att-src="image_data_uri(company.logo)" style="max-height: 120px; object-fit: contain;" alt="Logo"/>
                 </t>
             </div>
+
             <div class="article o_report_layout_standard" style="font-family: 'Tajawal-Regular', Arial, sans-serif; font-size: 12px;">
                 <t t-raw="0"/>
             </div>
+
+            <!-- Footer with Stamp Placement -->
             <div class="footer o_background_footer" style="position: relative; min-height: 150px;">
-                <!-- STAMP PLACEMENT: Bottom Right of Footer -->
                 <t t-if="o.company_id.pantera_stamp_image">
                     <div style="position: absolute; bottom: 10px; right: 10px; opacity: 0.9; z-index: 100;">
                         <img t-att-src="image_data_uri(o.company_id.pantera_stamp_image)" 
@@ -35,12 +53,12 @@
             </div>
         </template>
 
-        <!-- Main Document Template Matching Attached PDF Style -->
+        <!-- 3. Main Document Template Matching Attached PDF Style -->
         <template id="report_inv_pantera_with_stamp_document">
             <t t-foreach="doc" t-as="o">
                 <t t-call="pantera_invoice.external_layout_inv_pantera_stamped">
                     
-                    <!-- 1. Top Info Section -->
+                    <!-- Top Info Section -->
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11px;">
                         <tr>
                             <td style="width: 35%; vertical-align: top; padding: 5px; border: 1px solid #ddd;">
@@ -86,7 +104,7 @@
                         </tr>
                     </table>
 
-                    <!-- 2. Line Items Table -->
+                    <!-- Line Items Table -->
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11px;">
                         <thead>
                             <tr style="background-color: #f2f2f2; border: 1px solid #000;">
@@ -141,12 +159,7 @@
                         </tbody>
                     </table>
 
-                    <!-- 3. Amount in Words -->
-                    <!-- <div style="margin-bottom: 15px; font-size: 11px; font-style: italic;">
-                        <t t-esc="o.currency_id.amount_to_text(o.amount_total)"/>
-                    </div> -->
-
-                    <!-- 4. Bank Details Section -->
+                    <!-- Bank Details Section -->
                     <table style="width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 10px;">
                         <tr>
                             <td style="width: 50%; vertical-align: top; padding: 5px;">
@@ -177,7 +190,7 @@
             </t>
         </template>
 
-        <!-- Report Action -->
+        <!-- Report Action using the NEW Portrait Paper Format -->
         <record id="action_report_inv_pantera_with_stamp" model="ir.actions.report">
             <field name="name">Pantera Invoice With Stamp</field>
             <field name="model">account.move</field>
@@ -185,7 +198,7 @@
             <field name="report_name">pantera_invoice.report_inv_pantera_with_stamp</field>
             <field name="report_file">pantera_invoice.report_inv_pantera_with_stamp</field>
             <field name="print_report_name">'Invoice With Stamp - %s' % (object.name)</field>
-            <field name="paperformat_id" ref="pantera_invoice.paperformat_report_inv_pantera"/>
+            <field name="paperformat_id" ref="pantera_invoice.paperformat_report_inv_pantera_stamped"/>
         </record>
     </data>
 </odoo>
