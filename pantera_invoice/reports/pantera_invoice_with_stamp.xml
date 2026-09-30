@@ -132,8 +132,11 @@
                                 <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.0f}'.format(total_qty)"/></td>
                                 <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="o.currency_id.symbol"/></td>
                                 <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.2f}'.format(total_amount)"/></td>
-                                <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="o.currency_id.amount_to_text(o.amount_total)"/></td>
-
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="padding: 5px; border: 1px solid #000; text-align: right;">
+                                    <strong>Grand Total:</strong> <t t-esc="o.currency_id.amount_to_text(o.amount_total)"/>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
