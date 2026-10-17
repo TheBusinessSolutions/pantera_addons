@@ -29,26 +29,36 @@
             <div class="header" style="text-align: left; margin-bottom: 5px;">
                 <t t-if="doc.with_context(lang='en_US').brand_id">
                     <!-- Reduced max-height to 100px -->
-                    <img t-att-src="image_data_uri(doc.brand_id.image_1920)" style="max-height: 100px; object-fit: contain;" alt="Logo"/>
+                    <img t-att-src="image_data_uri(doc.brand_id.image_1920)" style="max-height: 200px; object-fit: contain;" alt="Logo"/>
                 </t>
                 <t t-else="">
                     <!-- Reduced max-height to 100px -->
-                    <img t-att-src="image_data_uri(company.logo)" style="max-height: 100px; object-fit: contain;" alt="Logo"/>
+                    <img t-att-src="image_data_uri(company.logo)" style="max-height: 200px; object-fit: contain;" alt="Logo"/>
                 </t>
             </div>
 
             <div class="article o_report_layout_standard" style="font-family: 'Tajawal-Regular', Arial, sans-serif; font-size: 11px;">
                 <t t-raw="0"/>
+                <!-- Company Stamp: inside printable article -->
+                <t t-if="company and company.pantera_stamp_image">
+                    <div style="width: 100%; text-align: right;
+                                margin-top: 10px; padding-right: 20px;">
+                        <img t-att-src="image_data_uri(company.pantera_stamp_image)"
+                             style="width: 140px; max-height: 140px;
+                                    object-fit: contain;"
+                             alt="Company Stamp"/>
+                    </div>
+                </t>
             </div>
 
             <!-- Footer with Stamp Placement -->
-            <div class="footer o_background_footer" style="position: relative; min-height: 150px;">
+            <!-- <div class="footer o_background_footer" style="position: relative; min-height: 150px;">
                 <t t-if="company.pantera_stamp_image">
                     <div style="position: absolute; bottom: 10px; right: 10px; opacity: 0.9; z-index: 100;">
                         <img t-att-src="image_data_uri(company.pantera_stamp_image)" 
                              style="max-width: 140px; max-height: 140px; object-fit: contain;"/>
                     </div>
-                </t>
+                </t> -->
                 <div class="text-center text-muted" style="font-size: 10px; margin-top: 10px;">
                     Page: <span class="page"/> of <span class="topage"/>
                 </div>
