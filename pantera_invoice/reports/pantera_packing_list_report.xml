@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- 1. Optimized Paper Format: Reduced Top Margin -->
+        <!-- 1. Paper Format: Changed to Portrait to match Invoice -->
         <record id="paperformat_report_packing_pantera" model="report.paperformat">
             <field name="name">Pantera Packing List</field>
             <field name="default" eval="False"/>
             <field name="format">A4</field>
-            <field name="orientation">Landscape</field>
-            <field name="margin_top">25</field> <!-- Reduced from 70 -->
+            <field name="orientation">Portrait</field> <!-- Changed from Landscape -->
+            <field name="margin_top">35</field>
             <field name="margin_bottom">20</field>
             <field name="margin_left">7</field>
             <field name="margin_right">7</field>
             <field name="header_line" eval="False"/>
-            <field name="header_spacing">25</field> <!-- Reduced spacing -->
+            <field name="header_spacing">30</field>
             <field name="dpi">90</field>
         </record>
 
-        <!-- 2. Compact External Layout -->
+        <!-- 2. External Layout: Left Aligned Logo + Footer Stamp -->
         <template id="external_layout_packing_pantera">
             <t t-if="o and 'company_id' in o">
                 <t t-set="company" t-value="o.company_id"/>
@@ -25,13 +25,13 @@
                 <t t-set="company" t-value="res_company"/>
             </t>
             
-            <!-- Compact Header -->
-            <div class="header" style="text-align: left; margin-bottom: 5px;">
+            <!-- Header with Left Alignment -->
+            <div class="header" style="text-align: left; margin-bottom: 10px;">
                 <t t-if="doc.with_context(lang='en_US').brand_id">
-                    <img t-att-src="image_data_uri(doc.brand_id.image_1920)" style="max-height: 80px; object-fit: contain;" alt="Logo"/>
+                    <img t-att-src="image_data_uri(doc.brand_id.image_1920)" style="max-height: 300px; object-fit: contain;" alt="Logo"/>
                 </t>
                 <t t-else="">
-                    <img t-att-src="image_data_uri(company.logo)" style="max-height: 80px; object-fit: contain;" alt="Logo"/>
+                    <img t-att-src="image_data_uri(company.logo)" style="max-height: 300px; object-fit: contain;" alt="Logo"/>
                 </t>
             </div>
 
@@ -39,55 +39,56 @@
                 <t t-raw="0"/>
             </div>
 
-            <!-- Footer with Stamp -->
-            <div class="footer o_background_footer" style="position: relative; min-height: 60px;">
+            <!-- Footer with Stamp Placement -->
+            <div class="footer o_background_footer" style="position: relative; min-height: 150px;">
                 <t t-if="company.pantera_stamp_image">
-                    <div style="position: absolute; bottom: 5px; right: 10px; opacity: 0.9; z-index: 100;">
+                    <div style="position: absolute; bottom: 10px; right: 10px; opacity: 0.9; z-index: 100;">
                         <img t-att-src="image_data_uri(company.pantera_stamp_image)" 
-                             style="max-width: 120px; max-height: 120px; object-fit: contain;"/>
+                             style="max-width: 140px; max-height: 140px; object-fit: contain;"/>
                     </div>
                 </t>
-                <div class="text-center text-muted" style="font-size: 10px; margin-top: 5px;">
+                <div class="text-center text-muted" style="font-size: 10px; margin-top: 10px;">
                     Page: <span class="page"/> of <span class="topage"/>
                 </div>
             </div>
         </template>
 
-        <!-- 3. Organized Document Template -->
+        <!-- 3. Document Template: Matching Invoice Grid Style -->
         <template id="report_packing_pantera_document">
             <t t-foreach="doc" t-as="o">
                 <t t-call="pantera_invoice.external_layout_packing_pantera">
                     <div class="page">
                         
                         <!-- Title -->
-                        <div style="text-align: center; margin-bottom: 10px; font-size: 14px; font-weight: bold;">
+                        <div style="text-align: center; margin-bottom: 15px; font-size: 14px; font-weight: bold;">
                             PACKING LIST
                         </div>
 
                         <!-- Compact Info Grid (Shipper | Consignee | Details) -->
-                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11px;">
                             <tr>
                                 <!-- Shipper Column -->
-                                <td style="width: 35%; vertical-align: top; padding: 4px; border: 1px solid #ccc;">
+                                <td style="width: 35%; vertical-align: top; padding: 5px; border: 1px solid #ddd;">
                                     <strong>Shipper:</strong><br/>
                                     <t t-esc="o.company_id.name"/><br/>
                                     <t t-esc="o.company_id.street"/><br/>
                                     <t t-esc="o.company_id.city"/>, <t t-esc="o.company_id.country_id.name"/><br/>
-                                    Tel: <t t-esc="o.company_id.phone"/>
+                                    Tax ID: <t t-esc="o.company_id.vat"/>
                                 </td>
                                 
                                 <!-- Consignee Column -->
-                                <td style="width: 35%; vertical-align: top; padding: 4px; border: 1px solid #ccc;">
+                                <td style="width: 35%; vertical-align: top; padding: 5px; border: 1px solid #ddd;">
                                     <strong>Consignee:</strong><br/>
                                     <t t-esc="o.partner_id.name"/><br/>
                                     <t t-esc="o.partner_id.street"/><br/>
                                     <t t-esc="o.partner_id.city"/>, <t t-esc="o.partner_id.country_id.name"/><br/>
+                                    VAT: <t t-esc="o.partner_id.vat"/><br/>
                                     Tel: <t t-esc="o.partner_id.phone"/>
                                 </td>
 
                                 <!-- Invoice Details Column -->
-                                <td style="width: 30%; vertical-align: top; padding: 4px; border: 1px solid #ccc;">
-                                    <table style="width: 100%;">
+                                <td style="width: 30%; vertical-align: top; padding: 5px; border: 1px solid #ddd;">
+                                    <table style="width: 100%; font-size: 11px;">
                                         <tr><td><strong>Invoice No:</strong></td><td style="text-align: right;"><t t-esc="o.name"/></td></tr>
                                         <tr><td><strong>Date:</strong></td><td style="text-align: right;"><t t-esc="o.invoice_date"/></td></tr>
                                         <tr><td><strong>Vessel:</strong></td><td style="text-align: right;"><t t-esc="o.vessel"/></td></tr>
@@ -96,21 +97,39 @@
                                     </table>
                                 </td>
                             </tr>
+                            <!-- Second Row for Logistics Details -->
+                            <tr>
+                                <td colspan="3" style="padding: 0;">
+                                    <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                                        <tr>
+                                            <td style="width: 25%; padding: 5px; border: 1px solid #ddd;"><strong>POL:</strong> <t t-esc="o.pol"/></td>
+                                            <td style="width: 25%; padding: 5px; border: 1px solid #ddd;"><strong>POD:</strong> <t t-esc="o.pod"/></td>
+                                            <td style="width: 25%; padding: 5px; border: 1px solid #ddd;"><strong>Container No:</strong> <t t-esc="o.invoice_line_ids[:1].container_no"/></td>
+                                            <td style="width: 25%; padding: 5px; border: 1px solid #ddd;"><strong>Lot No:</strong> -</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 5px; border: 1px solid #ddd;"><strong>ETD:</strong> <t t-esc="o.etd_date"/></td>
+                                            <td style="padding: 5px; border: 1px solid #ddd;"><strong>ETA:</strong> <t t-esc="o.eta_date"/></td>
+                                            <td colspan="2" style="padding: 5px; border: 1px solid #ddd;"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
                         </table>
 
                         <!-- Main Data Table -->
-                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11px;">
                             <thead>
                                 <tr style="background-color: #f2f2f2; border: 1px solid #000;">
-                                    <th style="padding: 4px; border: 1px solid #000; text-align: left;">Container</th>
-                                    <th style="padding: 4px; border: 1px solid #000; text-align: right;">Quantity</th>
-                                    <th style="padding: 4px; border: 1px solid #000; text-align: left;">Box Type</th>
-                                    <th style="padding: 4px; border: 1px solid #000; text-align: left;">Product</th>
-                                    <th style="padding: 4px; border: 1px solid #000; text-align: left;">Variety</th>
-                                    <th style="padding: 4px; border: 1px solid #000; text-align: right;">G.W (KG)</th>
-                                    <th style="padding: 4px; border: 1px solid #000; text-align: right;">Total Gross</th>
-                                    <th style="padding: 4px; border: 1px solid #000; text-align: right;">N.W (KG)</th>
-                                    <th style="padding: 4px; border: 1px solid #000; text-align: right;">Total Net</th>
+                                    <th style="padding: 6px; border: 1px solid #000; text-align: left;">Container</th>
+                                    <th style="padding: 6px; border: 1px solid #000; text-align: right;">Quantity</th>
+                                    <th style="padding: 6px; border: 1px solid #000; text-align: left;">Box Type</th>
+                                    <th style="padding: 6px; border: 1px solid #000; text-align: left;">Product</th>
+                                    <th style="padding: 6px; border: 1px solid #000; text-align: left;">Variety</th>
+                                    <th style="padding: 6px; border: 1px solid #000; text-align: right;">G.W (KG)</th>
+                                    <th style="padding: 6px; border: 1px solid #000; text-align: right;">Total Gross</th>
+                                    <th style="padding: 6px; border: 1px solid #000; text-align: right;">N.W (KG)</th>
+                                    <th style="padding: 6px; border: 1px solid #000; text-align: right;">Total Net</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -132,52 +151,52 @@
                                     </t>
 
                                     <tr style="border: 1px solid #000;">
-                                        <td style="padding: 4px; border: 1px solid #000;"><t t-esc="line.container_no"/></td>
-                                        <td style="padding: 4px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.0f}'.format(line.quantity)"/></td>
-                                        <td style="padding: 4px; border: 1px solid #000;"><t t-esc="line.pantera_product_box_id.name"/></td>
-                                        <td style="padding: 4px; border: 1px solid #000;"><t t-esc="line.product_id.name"/></td>
-                                        <td style="padding: 4px; border: 1px solid #000;"><t t-esc="line.pantera_product_variety_id.name"/></td>
-                                        <td style="padding: 4px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.2f}'.format(line.product_id.weight)"/></td>
-                                        <td style="padding: 4px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.2f}'.format(line_gross)"/></td>
-                                        <td style="padding: 4px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.2f}'.format(line.product_id.net_weight)"/></td>
-                                        <td style="padding: 4px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.2f}'.format(line_net)"/></td>
+                                        <td style="padding: 5px; border: 1px solid #000;"><t t-esc="line.container_no"/></td>
+                                        <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.0f}'.format(line.quantity)"/></td>
+                                        <td style="padding: 5px; border: 1px solid #000;"><t t-esc="line.pantera_product_box_id.name"/></td>
+                                        <td style="padding: 5px; border: 1px solid #000;"><t t-esc="line.product_id.name"/></td>
+                                        <td style="padding: 5px; border: 1px solid #000;"><t t-esc="line.pantera_product_variety_id.name"/></td>
+                                        <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.2f}'.format(line.product_id.weight)"/></td>
+                                        <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.2f}'.format(line_gross)"/></td>
+                                        <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.2f}'.format(line.product_id.net_weight)"/></td>
+                                        <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.2f}'.format(line_net)"/></td>
                                     </tr>
                                 </t>
                                 
                                 <!-- Totals Row -->
                                 <tr style="background-color: #f9f9f9; font-weight: bold; border: 1px solid #000;">
-                                    <td colspan="2" style="padding: 4px; border: 1px solid #000; text-align: right;">TOTALS:</td>
-                                    <td style="padding: 4px; border: 1px solid #000;"></td>
-                                    <td style="padding: 4px; border: 1px solid #000;"></td>
-                                    <td style="padding: 4px; border: 1px solid #000;"></td>
-                                    <td style="padding: 4px; border: 1px solid #000;"></td>
-                                    <td style="padding: 4px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.2f}'.format(total_gross)"/></td>
-                                    <td style="padding: 4px; border: 1px solid #000;"></td>
-                                    <td style="padding: 4px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.2f}'.format(total_net)"/></td>
+                                    <td colspan="2" style="padding: 5px; border: 1px solid #000; text-align: right;">TOTALS:</td>
+                                    <td style="padding: 5px; border: 1px solid #000;"></td>
+                                    <td style="padding: 5px; border: 1px solid #000;"></td>
+                                    <td style="padding: 5px; border: 1px solid #000;"></td>
+                                    <td style="padding: 5px; border: 1px solid #000;"></td>
+                                    <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.2f}'.format(total_gross)"/></td>
+                                    <td style="padding: 5px; border: 1px solid #000;"></td>
+                                    <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.2f}'.format(total_net)"/></td>
                                 </tr>
                             </tbody>
                         </table>
 
-                        <!-- Summary Section (Side-by-Side) -->
-                        <div style="margin-top: 10px; font-size: 10px;">
+                        <!-- Summary Section -->
+                        <div style="margin-top: 15px; font-size: 11px;">
                             <table style="width: 100%; border-collapse: collapse;">
                                 <tr>
                                     <td style="width: 50%; vertical-align: top;">
                                         <table style="width: 100%; border: 1px solid #000;">
                                             <tr style="background-color: #f2f2f2;">
-                                                <td colspan="2" style="padding: 4px; border: 1px solid #000; text-align: center;"><strong>Summary</strong></td>
+                                                <td colspan="2" style="padding: 5px; border: 1px solid #000; text-align: center;"><strong>Summary</strong></td>
                                             </tr>
                                             <tr>
-                                                <td style="padding: 4px; border: 1px solid #000; width: 70%;"><strong>Total Number of Boxes:</strong></td>
-                                                <td style="padding: 4px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.0f}'.format(total_boxes)"/></td>
+                                                <td style="padding: 5px; border: 1px solid #000; width: 70%;"><strong>Total Number of Boxes:</strong></td>
+                                                <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="'{:,.0f}'.format(total_boxes)"/></td>
                                             </tr>
                                             <tr>
-                                                <td style="padding: 4px; border: 1px solid #000;"><strong>Total Number of Containers:</strong></td>
-                                                <td style="padding: 4px; border: 1px solid #000; text-align: right;"><t t-esc="len(unique_containers)"/></td>
+                                                <td style="padding: 5px; border: 1px solid #000;"><strong>Total Number of Containers:</strong></td>
+                                                <td style="padding: 5px; border: 1px solid #000; text-align: right;"><t t-esc="len(unique_containers)"/></td>
                                             </tr>
                                         </table>
                                     </td>
-                                    <td style="width: 50%;"></td> <!-- Empty space for balance or signature -->
+                                    <td style="width: 50%;"></td>
                                 </tr>
                             </table>
                         </div>
