@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- 1. Paper Format: Changed to Portrait to match Invoice -->
+        <!-- 1. Paper Format: Adjusted Header Spacing -->
         <record id="paperformat_report_packing_pantera" model="report.paperformat">
             <field name="name">Pantera Packing List</field>
             <field name="default" eval="False"/>
             <field name="format">A4</field>
-            <field name="orientation">Portrait</field> <!-- Changed from Landscape -->
+            <field name="orientation">Portrait</field>
             <field name="margin_top">35</field>
             <field name="margin_bottom">20</field>
             <field name="margin_left">7</field>
             <field name="margin_right">7</field>
             <field name="header_line" eval="False"/>
-            <field name="header_spacing">30</field>
+            <field name="header_spacing">45</field> <!-- Increased from 30 to 45 to prevent overlap -->
             <field name="dpi">90</field>
         </record>
 
-        <!-- 2. External Layout: Left Aligned Logo + Footer Stamp -->
+        <!-- 2. External Layout: Reduced Logo Height -->
         <template id="external_layout_packing_pantera">
             <t t-if="o and 'company_id' in o">
                 <t t-set="company" t-value="o.company_id"/>
@@ -26,12 +26,14 @@
             </t>
             
             <!-- Header with Left Alignment -->
-            <div class="header" style="text-align: left; margin-bottom: 10px;">
+            <div class="header" style="text-align: left; margin-bottom: 5px;">
                 <t t-if="doc.with_context(lang='en_US').brand_id">
-                    <img t-att-src="image_data_uri(doc.brand_id.image_1920)" style="max-height: 200px; object-fit: contain;" alt="Logo"/>
+                    <!-- Reduced max-height to 100px -->
+                    <img t-att-src="image_data_uri(doc.brand_id.image_1920)" style="max-height: 100px; object-fit: contain;" alt="Logo"/>
                 </t>
                 <t t-else="">
-                    <img t-att-src="image_data_uri(company.logo)" style="max-height: 200px; object-fit: contain;" alt="Logo"/>
+                    <!-- Reduced max-height to 100px -->
+                    <img t-att-src="image_data_uri(company.logo)" style="max-height: 100px; object-fit: contain;" alt="Logo"/>
                 </t>
             </div>
 
@@ -53,7 +55,7 @@
             </div>
         </template>
 
-        <!-- 3. Document Template: Matching Invoice Grid Style -->
+        <!-- 3. Document Template (Unchanged) -->
         <template id="report_packing_pantera_document">
             <t t-foreach="doc" t-as="o">
                 <t t-call="pantera_invoice.external_layout_packing_pantera">
