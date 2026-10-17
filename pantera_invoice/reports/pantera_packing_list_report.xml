@@ -38,6 +38,17 @@
 
             <div class="article o_report_layout_standard">
                 <t t-raw="0"/>
+                                <!-- Company Stamp inside printable report body -->
+                <t t-if="company and company.pantera_stamp_image">
+                    <div style="width: 100%; text-align: right;
+                                margin-top: 10px; padding-right: 20px;
+                                page-break-inside: avoid;">
+                        <img t-att-src="image_data_uri(company.pantera_stamp_image)"
+                             style="width: 140px; max-height: 140px;
+                                    object-fit: contain;"
+                             alt="Company Stamp"/>
+                    </div>
+                </t>
             </div>
             <div class="footer o_background_footer">
                 <div class="text-center" style="font-size:14px;">
